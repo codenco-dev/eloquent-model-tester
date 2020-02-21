@@ -14,8 +14,7 @@ trait ColumnsTestable
     {
         if(property_exists($this,'table') && property_exists($this,'columns')
             && count($this->columns) > 0 && !empty($this->table) )  {
-            $this->assertTrue(
-                Schema::hasColumns($this->table, $this->columns), 1);
+            $this->assertEquals([], collect($this->columns)->diffAssoc(Schema::getColumnListing($this->table))->toArray());
         }
         else{
             $this->assertTrue(true);
