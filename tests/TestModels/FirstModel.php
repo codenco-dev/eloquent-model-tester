@@ -19,8 +19,5 @@ class FirstModel extends Model
         return $this->hasMany(SecondModel::class,'first_model_id','id');
     }
 
-    public function morph_models(): MorphMany
-    {
-        return $this->morphMany(MorphModel::class, 'morph_modelable');
-    }
+
 }

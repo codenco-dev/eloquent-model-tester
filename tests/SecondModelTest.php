@@ -5,11 +5,13 @@ namespace Thomasdominic\ModelsTestor\Tests;
 
 
 use Thomasdominic\ModelsTestor\Tests\TestModels\FirstModel;
+use Thomasdominic\ModelsTestor\Tests\TestModels\MorphModel;
 use Thomasdominic\ModelsTestor\Tests\TestModels\SecondModel;
 use Thomasdominic\ModelsTestor\Tests\TestModels\ThirdModel;
 use Thomasdominic\ModelsTestor\Traits\BelongToRelationsTestable;
 use Thomasdominic\ModelsTestor\Traits\ColumnsTestable;
 use Thomasdominic\ModelsTestor\Traits\FillableTestable;
+use Thomasdominic\ModelsTestor\Traits\HasManyMorphRelationsTestable;
 use Thomasdominic\ModelsTestor\Traits\ManyToManyRelationsTestable;
 
 class SecondModelTest extends TestCase
@@ -44,5 +46,15 @@ class SecondModelTest extends TestCase
             'relation_name'  => 'third_models',
         ],
     ];
+
+    use HasManyMorphRelationsTestable;
+    protected array $hasManyMorphRelations
+        = [
+            [
+                'morph_model_class'     => MorphModel::class,
+                'morphable_model_class' => SecondModel::class,
+                'morph_relation'        => 'morph_models',
+            ]
+        ];
 
 }

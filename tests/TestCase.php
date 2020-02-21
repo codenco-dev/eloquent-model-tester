@@ -47,7 +47,7 @@ abstract class TestCase extends Orchestra
         $this->app['db']->connection()->getSchemaBuilder()->create('morph_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->nullableMorphs('morph_testable');
+            $table->nullableMorphs('morph_modelable');
         });
 
     }
