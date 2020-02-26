@@ -19,9 +19,6 @@ trait ModelsTestorTrait
         }
 
         $this->columns = $columns;
-//dd(Schema::getColumnListing($this->getModelTable()),$this->getModelTable());
-//        $this->assertEquals([],
-//            collect($this->columns)->diffAssoc(Schema::getColumnListing($this->getModelTable()))->toArray());
         collect($this->columns)->each(function ($column) {
             $this->assertTrue(in_array($column,Schema::getColumnListing($this->getModelTable())));
         });
