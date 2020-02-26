@@ -4,7 +4,7 @@
 namespace Thomasdominic\ModelsTestor\Tests;
 
 
-use Thomasdominic\ModelsTestor\ModelsTestor;
+use Thomasdominic\ModelsTestor\ModelsTestorTrait;
 use Thomasdominic\ModelsTestor\Tests\TestModels\FirstModel;
 use Thomasdominic\ModelsTestor\Tests\TestModels\MorphModel;
 use Thomasdominic\ModelsTestor\Tests\TestModels\SecondModel;
@@ -12,30 +12,9 @@ use Thomasdominic\ModelsTestor\Tests\TestModels\ThirdModel;
 
 class EloquentModelTest extends TestCase
 {
-//    use ColumnsTestable;
-//    protected string $table = 'first_models';
-//    protected array $columns
-//        = [
-//            'id', 'name',
-//        ];
-//
-//    use FillableTestable;
-//    protected string $toBeInFillableModel = FirstModel::class;
-//    protected array $toBeInFillableProperty = ['name'];
-//
-//
-//    use HasManyRelationsTestable;
-//    protected array $hasManyRelations
-//        = [
-//            [
-//                'model_class'          => FirstModel::class,
-//                'relation_class'       => SecondModel::class,
-//                'relation_name'        => 'second_models',
-//                'relation_foreign_key' => 'first_model_id',
-//            ],
-//        ];
 
-    use ModelsTestor;
+
+    use ModelsTestorTrait;
 
     public function test_have_first_model_model()
     {
