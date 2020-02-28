@@ -18,7 +18,7 @@ class EloquentModelTest extends TestCase
 
     public function test_have_first_model_model()
     {
-        $this->setModelTestable(FirstModel::class)
+        $this->modelTestable(FirstModel::class)
             ->assertHasColumns(['id', 'name',])
             ->assertCanFillables(['name'])
             ->assertHasHasManyRelations([
@@ -31,7 +31,7 @@ class EloquentModelTest extends TestCase
 
     public function test_have_second_model_model()
     {
-        $this->setModelTestable(SecondModel::class)
+        $this->modelTestable(SecondModel::class)
             ->assertHasColumns(['id', 'name', 'first_model_id',])
             ->assertCanFillables(['name', 'first_model_id'])
             ->assertHasBelongsToRelations([
@@ -58,7 +58,7 @@ class EloquentModelTest extends TestCase
 
     public function test_have_third_model_model()
     {
-        $this->setModelTestable(ThirdModel::class)
+        $this->modelTestable(ThirdModel::class)
             ->assertHasColumns([
                 'id', 'name',
             ])
@@ -73,7 +73,7 @@ class EloquentModelTest extends TestCase
 
     public function test_have_morph_model_model()
     {
-        $this->setModelTestable(MorphModel::class)
+        $this->modelTestable(MorphModel::class)
             ->assertHasColumns(['id','name','morph_modelable_type','morph_modelable_id',])
             ->assertCanFillables(['name','morph_modelable_type','morph_modelable_id'])
             ->assertHasBelongsToMorphRelations([
