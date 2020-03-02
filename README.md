@@ -273,7 +273,7 @@ You can test if a table contains columns with the `tableTestable` method
         public function test_have_table_without_model()
         {
             $this->tableTestable('pivot_table')
-                ->assertHasColumns(['first_model_id','second_model_id','other_propertie']);
+                ->assertHasColumns(['first_model_id','second_model_id','other_property']);
         }
     }
 ```
