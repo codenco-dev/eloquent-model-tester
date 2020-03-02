@@ -85,21 +85,13 @@ class ModelsTestor extends TestCase
 
     public function assertCanFillables(array $fillable = [])
     {
-
-
-        $t = collect(array_flip($fillable))->transform(function ($item, $key) {
-            return 'value_for_test';
-        });
-        $classModel = $this->getModel();
-        $model = (new $classModel)->fill($t->toArray());
-        $this->assertEquals([], collect($t->toArray())->diffAssoc($model->toArray())->toArray());
-
+        $modelClass = $this->getModel();
+        $this->assertEquals([], collect($fillable)->diff((new $modelClass)->getFillable())->toArray());
         return $this;
     }
 
     public function assertHasHasManyRelations(array $hasManyRelations)
     {
-
         foreach ($hasManyRelations as $relation) {
             $model = factory($this->getModel())->create();
             $related = $model->{$relation['relation_name']}()->save(factory($relation['relation_class'])->make());
