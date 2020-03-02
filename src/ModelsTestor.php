@@ -75,8 +75,7 @@ class ModelsTestor extends TestCase
 
     public function assertHasColumns(array $columns)
     {
-        $this->columns = $columns;
-        collect($this->columns)->each(function ($column) {
+        collect($columns)->each(function ($column) {
             $this->assertTrue(in_array($column, Schema::getColumnListing($this->getTable())));
         });
 
@@ -91,8 +90,8 @@ class ModelsTestor extends TestCase
         $t = collect(array_flip($fillable))->transform(function ($item, $key) {
             return 'value_for_test';
         });
-
-        $model = (new $this->model_testable)->fill($t->toArray());
+        $classModel = $this->getModel();
+        $model = (new $classModel)->fill($t->toArray());
         $this->assertEquals([], collect($t->toArray())->diffAssoc($model->toArray())->toArray());
 
         return $this;
@@ -102,7 +101,7 @@ class ModelsTestor extends TestCase
     {
 
         foreach ($hasManyRelations as $relation) {
-            $model = factory($this->model_testable)->create();
+            $model = factory($this->getModel())->create();
             $related = $model->{$relation['relation_name']}()->save(factory($relation['relation_class'])->make());
             $model->refresh();
             $this->assertTrue($model->{$relation['relation_name']}->contains($related));
@@ -123,14 +122,14 @@ class ModelsTestor extends TestCase
 
             $related = factory($relation['relation_class'])->create();
 
-            $model = factory($this->model_testable)->create([$relation['relation_foreign_key'] => $related->id]);
+            $model = factory($this->getModel())->create([$relation['relation_foreign_key'] => $related->id]);
 
 
             $this->assertEquals($model->{$relation['relation_name']}->id, $related->id);
             $this->assertInstanceOf($relation['relation_class'], $model->{$relation['relation_name']});
 
             $related2 = factory($relation['relation_class'])->create();
-            $model2 = factory($this->model_testable)->make();
+            $model2 = factory($this->getModel())->make();
             $model2->{$relation['relation_name']}()->associate($related2)->save();
 
             $this->assertEquals($model2->{$relation['relation_foreign_key']}, $related2->id);
@@ -145,7 +144,7 @@ class ModelsTestor extends TestCase
 
         foreach ($manyToManyRelations as $relation) {
 
-            $model = factory($this->model_testable)->create();
+            $model = factory($this->getModel())->create();
             $related = factory($relation['relation_class'])->create();
             $model->{$relation['relation_name']}()->attach($related);
 
@@ -164,7 +163,7 @@ class ModelsTestor extends TestCase
 
         foreach ($hasManyMorphRelations as $relation) {
 
-            $morphable = factory($this->model_testable)->create();
+            $morphable = factory($this->getModel())->create();
             $morphable->{$relation['morph_relation']}()->save(factory($relation['morph_model_class'])->make());
 
             $morphable->refresh();
@@ -178,7 +177,7 @@ class ModelsTestor extends TestCase
 
         foreach ($belongsToMorphRelations as $relation) {
             $morphable = factory($relation['morphable_model_class'])->create();
-            $morph = factory($this->model_testable)->create([
+            $morph = factory($this->getModel())->create([
                 $relation['morph_relation'].'_id'   => $morphable->id,
                 $relation['morph_relation'].'_type' => $relation['morphable_model_class'],
             ]);
