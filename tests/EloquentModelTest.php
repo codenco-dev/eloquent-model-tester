@@ -7,14 +7,28 @@ namespace Thomasdominic\ModelsTestor\Tests;
 use Thomasdominic\ModelsTestor\ModelsTestorTrait;
 use Thomasdominic\ModelsTestor\Tests\TestModels\FirstModel;
 use Thomasdominic\ModelsTestor\Tests\TestModels\MorphModel;
+use Thomasdominic\ModelsTestor\Tests\TestModels\NotAModel;
 use Thomasdominic\ModelsTestor\Tests\TestModels\SecondModel;
 use Thomasdominic\ModelsTestor\Tests\TestModels\ThirdModel;
 
 class EloquentModelTest extends TestCase
 {
 
-
     use ModelsTestorTrait;
+
+    public function test_it_doesnt_run_without_model_class()
+    {
+        $this->assertFalse($this->modelTestable(NotAModel::class)->isModelClass());
+        $this->assertTrue($this->modelTestable(FirstModel::class)->isModelClass());
+
+    }
+
+    public function test_it_doesnt_run_without_existing_table_name()
+    {
+        $this->assertFalse($this->tableTestable("not_exists")->isExistingTable());
+        $this->assertTrue($this->tableTestable("first_models")->isExistingTable());
+
+    }
 
     public function test_have_first_model_model()
     {
@@ -83,5 +97,11 @@ class EloquentModelTest extends TestCase
                     ],
                 ]
             );
+    }
+
+    public function test_have_table_without_model()
+    {
+        $this->tableTestable('second_model_third_model')
+            ->assertHasColumns(['second_model_id','third_model_id']);
     }
 }

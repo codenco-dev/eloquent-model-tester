@@ -4,6 +4,7 @@ namespace Thomasdominic\ModelsTestor;
 
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use PHPUnit\Framework\TestCase;
 
@@ -12,36 +13,34 @@ class ModelsTestor extends TestCase
     /**
      * @var string
      */
-    private string $model_testable;
+    private ?string $model_testable;
     /**
      * @var string|null
      */
     private ?string $table;
 
-    public function __construct(string $model_testable, ?string $table = null)
+    public function __construct(?string $model_testable, ?string $table = null)
     {
+        parent::__construct();
         $this->model_testable = $model_testable;
         $this->table = $table;
     }
 
-    public function __call($name, $arguments)
+    public function getModel()
     {
-            throw_if(($name == "assertHasColumns" && is_null($this->getModelTable())),
-                (new \Exception("You have to declare the table's name")));
+        throw_if(is_null($this->model_testable) || !$this->isModelClass($this->model_testable),
+            new \Exception("You have to use a Eloquent Model"));
 
-            throw_if(is_null($this->model_testable),(new \Exception("You have to declare the model's name")));
+        return $this->model_testable;
     }
 
-    public function assertHasColumns(array $columns)
+    public function getTable()
     {
-        $this->columns = $columns;
-        collect($this->columns)->each(function ($column) {
-            $this->assertTrue(in_array($column, Schema::getColumnListing($this->getModelTable())));
-        });
+        throw_if(!$this->isExistingTable(),
+            new \Exception("You have to use an existing table"));
 
-        return $this;
+        return $this->getModelTable();
     }
-
 
     public function getModelTable()
     {
@@ -49,8 +48,41 @@ class ModelsTestor extends TestCase
             return $this->table;
         }
 
-        return (new $this->model_testable)->getTable();
+        $modelClass = $this->getModel();
+
+        return (new $modelClass)->getTable();
     }
+
+    public function isModelClass(?string $modelClass = null)
+    {
+        if (!is_null($modelClass)) {
+            return ((new $modelClass) instanceof Model);
+        } else {
+            return ((new $this->model_testable) instanceof Model);
+        }
+
+    }
+
+    public function isExistingTable(?string $tableName = null)
+    {
+        if (!is_null($tableName)) {
+            return Schema::hasTable($tableName);
+        } else {
+            return Schema::hasTable($this->getModelTable());
+        }
+    }
+
+
+    public function assertHasColumns(array $columns)
+    {
+        $this->columns = $columns;
+        collect($this->columns)->each(function ($column) {
+            $this->assertTrue(in_array($column, Schema::getColumnListing($this->getTable())));
+        });
+
+        return $this;
+    }
+
 
     public function assertCanFillables(array $fillable = [])
     {
@@ -83,8 +115,8 @@ class ModelsTestor extends TestCase
         return $this;
     }
 
-    public function assertHasBelongsToRelations(array $belongsToRelations) {
-
+    public function assertHasBelongsToRelations(array $belongsToRelations)
+    {
 
 
         foreach ($belongsToRelations as $relation) {
@@ -108,7 +140,8 @@ class ModelsTestor extends TestCase
         return $this;
     }
 
-    public function assertHasManyToManyRelations(array $manyToManyRelations) {
+    public function assertHasManyToManyRelations(array $manyToManyRelations)
+    {
 
         foreach ($manyToManyRelations as $relation) {
 
@@ -126,7 +159,8 @@ class ModelsTestor extends TestCase
         return $this;
     }
 
-    public function assertHasHasManyMorphRelations(array $hasManyMorphRelations) {
+    public function assertHasHasManyMorphRelations(array $hasManyMorphRelations)
+    {
 
         foreach ($hasManyMorphRelations as $relation) {
 
@@ -138,7 +172,8 @@ class ModelsTestor extends TestCase
         }
     }
 
-    public function assertHasBelongsToMorphRelations(array $belongsToMorphRelations) {
+    public function assertHasBelongsToMorphRelations(array $belongsToMorphRelations)
+    {
 
 
         foreach ($belongsToMorphRelations as $relation) {
