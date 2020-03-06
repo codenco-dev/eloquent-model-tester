@@ -21,7 +21,7 @@ class ModelsTestor extends TestCase
         $this->table = $table;
     }
 
-    public function getModel(): string
+    public function getModel(): ?string
     {
         throw_if(is_null($this->tested) || ! $this->isModelClass($this->tested),
             new \Exception('You have to use a Eloquent Model'));
