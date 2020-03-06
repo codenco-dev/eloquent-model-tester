@@ -1,1 +1,5 @@
 preset: laravel
+
+fixer:
+  - trailing_comma_in_multiline_array
+
