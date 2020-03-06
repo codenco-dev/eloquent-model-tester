@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Thomasdominic\ModelsTestor\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
@@ -8,7 +7,6 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -18,11 +16,9 @@ abstract class TestCase extends Orchestra
 
     protected function setUpDatabase()
     {
-
         $this->app['db']->connection()->getSchemaBuilder()->create('first_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-
         });
 
         $this->app['db']->connection()->getSchemaBuilder()->create('second_models', function (Blueprint $table) {
@@ -49,7 +45,5 @@ abstract class TestCase extends Orchestra
             $table->string('name');
             $table->nullableMorphs('morph_modelable');
         });
-
     }
-
 }

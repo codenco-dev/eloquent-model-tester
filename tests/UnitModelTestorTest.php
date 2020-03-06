@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Thomasdominic\ModelsTestor\Tests;
-
 
 use Thomasdominic\ModelsTestor\ModelsTestor;
 use Thomasdominic\ModelsTestor\Tests\TestModels\FirstModel;
@@ -16,7 +14,7 @@ class UnitModelTestorTest extends TestCase
      */
     public function it_doesnt_run_without_model_class()
     {
-        $this->assertFalse( (new ModelsTestor(NotAModel::class) )->isModelClass());
+        $this->assertFalse((new ModelsTestor(NotAModel::class) )->isModelClass());
         $this->assertTrue((new ModelsTestor(FirstModel::class) )->isModelClass());
     }
 
@@ -25,8 +23,8 @@ class UnitModelTestorTest extends TestCase
      */
     public function it_doesnt_run_without_existing_table_name()
     {
-        $this->assertFalse((new ModelsTestor(null,'not_exists'))->isExistingTable());
-        $this->assertTrue((new ModelsTestor(null,'first_models'))->isExistingTable());
+        $this->assertFalse((new ModelsTestor(null, 'not_exists'))->isExistingTable());
+        $this->assertTrue((new ModelsTestor(null, 'first_models'))->isExistingTable());
     }
 
     /**
@@ -36,7 +34,7 @@ class UnitModelTestorTest extends TestCase
     {
         $instance = new ModelsTestor(FirstModel::class);
         $relation = $instance->getBelongsToRelationName(SecondModel::class);
-        $this->assertEquals("second_model",$relation);
+        $this->assertEquals('second_model', $relation);
     }
 
     /**
@@ -46,7 +44,7 @@ class UnitModelTestorTest extends TestCase
     {
         $instance = new ModelsTestor(FirstModel::class);
         $relation = $instance->getHasManyRelationName(SecondModel::class);
-        $this->assertEquals("second_models",$relation);
+        $this->assertEquals('second_models', $relation);
     }
 
     /**
@@ -57,7 +55,6 @@ class UnitModelTestorTest extends TestCase
         $instance = new ModelsTestor(FirstModel::class);
         $relation = $instance->getManyToManyRelationName(SecondModel::class);
 
-
-        $this->assertEquals("second_models",$relation);
+        $this->assertEquals('second_models', $relation);
     }
 }
