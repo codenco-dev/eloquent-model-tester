@@ -1,7 +1,7 @@
 # Helper for Testing structures, relations of your models in Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/thomasdominic/models-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
-[![Build Status](https://img.shields.io/travis/thomasdominic/models-testor/master.svg?style=flat-square)](https://travis-ci.org/thomasdominic/models-testor)
+[![Build Status](https://travis-ci.com/thomasdominic/models-testor.svg?branch=master)](https://travis-ci.org/thomasdominic/models-testor)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thomasdominic/models-testor.svg?style=flat-square)](https://scrutinizer-ci.com/g/thomasdominic/models-testor)
 [![Total Downloads](https://img.shields.io/packagist/dt/thomasdominic/models-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
 
@@ -76,12 +76,7 @@ class CategoryTest extends TestCase
     public function test_have_category_model()
     {
         $this->modelTestable(Category::class)
-            ->assertHasHasManyRelations([
-                [
-                    'relation_class' => Customer::class,
-                    'relation_name'  => 'customers',
-                ],
-            ]);
+            ->assertHasHasManyRelation(Customer::class);
     }
 
 }
@@ -93,36 +88,29 @@ class CustomerTest extends TestCase
     public function test_have_customer_model()
     {
         $this->modelTestable(Customer::class)
-            ->assertHasBelongsToRelations([
-                [
-                    'relation_class'       => Category::class,
-                    'relation_name'        => 'category',
-                    'relation_foreign_key' => 'category_id',
-                ],
-            ]);
+            ->assertHasBelongsToRelation(Category::class);
     }
 }
 ```
 
-If you have several relations, you can do this: 
+If you don't use Laravel naming convention, you may also override the relation and local keys (for belongsTo relation) by passing 
+additional arguments to the `assertHasHasManyRelations` and `assertHasBelongsToRelations` methods
+
+``` php
+$this->modelTestable(Customer::class)
+            ->assertHasBelongsToRelations(Category::class,'category','category_id');
+$this->modelTestable(Category::class)
+            ->assertHasHasManyRelations(Customer::class,'customers');
+
+```
+
+If you have several relations, you can chain methods like this: 
 
 ``` php
 
     $this->modelTestable(Customer::class)
-            ->assertHasBelongsToRelations([
-                [
-                    'model_class'          => Customer::class,
-                    'relation_class'       => Category::class,
-                    'relation_name'        => 'category',
-                    'relation_foreign_key' => 'category_id',
-                ],
-                [
-                    'model_class'          => Customer::class,
-                    'relation_class'       => OtherModel::class,
-                    'relation_name'        => 'other_model',
-                    'relation_foreign_key' => 'other_model_id',
-                ]
-            ]);
+            ->assertHasBelongsToRelation(Category::class)
+            ->assertHasBelongsToRelation(OtherModel::class);
     
 ```
 
@@ -152,12 +140,7 @@ You can test your ManyToMany relations with the `ManyToManyRelationsTestable` tr
         public function test_have_user_model()
         {
             $this->modelTestable(User::class)
-                ->assertHasManyToManyRelations([
-                [
-                    'relation_class' => Role::class,
-                    'relation_name'  => 'roles',
-                ]
-            ]);
+                ->assertHasManyToManyRelation(Role::class);
         }
 
 
@@ -170,16 +153,18 @@ You can test your ManyToMany relations with the `ManyToManyRelationsTestable` tr
         public function test_have_role_model()
         {
             $this->modelTestable(User::class)
-                ->assertHasManyToManyRelations([
-                [
-                    'relation_class' => User::class,
-                    'relation_name'  => 'users',
-                ]
-            ]);
+                ->assertHasManyToManyRelation(User::class);
         }
 
     }
 ```
+
+You can override the relation argument too : 
+```php
+$this->modelTestable(User::class)
+                ->assertHasManyToManyRelation(User::class,'users');
+```
+  
 
 ### Morph Relations
 
@@ -213,13 +198,7 @@ you can use `assertHasBelongsToMorphRelations` and `assertHasHasManyMorphRelatio
         public function test_have_post_model()
             {
                 $this->modelTestable(Post::class)
-                    ->assertHasHasManyMorphRelations([
-                            [
-                                'morph_model_class'     => Comment::class,
-                                'morph_relation'        => 'comments',
-                            ],
-                        ]
-                    );
+                    ->assertHasHasManyMorphRelation(Comment::class,'comments');
             }
     }
     
@@ -230,13 +209,7 @@ you can use `assertHasBelongsToMorphRelations` and `assertHasHasManyMorphRelatio
             public function test_have_video_model()
                 {
                     $this->modelTestable(Video::class)
-                        ->assertHasHasManyMorphRelations([
-                                [
-                                    'morph_model_class'     => Comment::class,
-                                    'morph_relation'        => 'comments',
-                                ],
-                            ]
-                        );
+                        ->assertHasHasManyMorphRelation(Comment::class,'comments');
                 }
         }
 
@@ -248,17 +221,8 @@ you can use `assertHasBelongsToMorphRelations` and `assertHasHasManyMorphRelatio
             public function test_have_morph_model_model()
             {
                 $this->modelTestable(Comment::class)
-                   ->assertHasBelongsToMorphRelations([
-                         [
-                                'morphable_model_class' => Post::class,
-                                'morph_relation'        => 'commentable',
-                            ],
-                            [
-                                'morphable_model_class' => Video::class,
-                                'morph_relation'        => 'commentable',
-                            ],
-                        ]
-                    );
+                   ->assertHasBelongsToMorphRelation(Post::class,'commentable')
+                   ->assertHasBelongsToMorphRelation(Video::class,'commentable');
             }
         }
 ```
