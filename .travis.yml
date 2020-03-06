@@ -1,0 +1,10 @@
+language: php
+
+php:
+  - 7.4
+
+before_script:
+  - travis_retry composer update
+
+script:
+  - vendor/bin.phpunit
