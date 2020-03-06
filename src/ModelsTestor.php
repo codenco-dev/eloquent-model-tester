@@ -6,32 +6,29 @@ namespace Thomasdominic\ModelsTestor;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\TestCase;
 
 class ModelsTestor extends TestCase
 {
-    /**
-     * @var string
-     */
-    private ?string $model_testable;
-    /**
-     * @var string|null
-     */
+
+    private ?string $tested;
+
     private ?string $table;
 
-    public function __construct(?string $model_testable, ?string $table = null)
+    public function __construct(?string $tested, ?string $table = null)
     {
         parent::__construct();
-        $this->model_testable = $model_testable;
+        $this->tested = $tested;
         $this->table = $table;
     }
 
     public function getModel(): string
     {
-        throw_if(is_null($this->model_testable) || !$this->isModelClass($this->model_testable),
+        throw_if(is_null($this->tested) || !$this->isModelClass($this->tested),
             new \Exception("You have to use a Eloquent Model"));
 
-        return $this->model_testable;
+        return $this->tested;
     }
 
     public function getTable(): string
@@ -58,7 +55,7 @@ class ModelsTestor extends TestCase
         if (!is_null($modelClass)) {
             return ((new $modelClass) instanceof Model);
         } else {
-            return ((new $this->model_testable) instanceof Model);
+            return ((new $this->tested) instanceof Model);
         }
 
     }
@@ -84,17 +81,19 @@ class ModelsTestor extends TestCase
     }
 
 
-    public function assertCanFillables(array $fillable = []): ModelsTestor
+    public function assertCanFillables(array $columns = []): ModelsTestor
     {
 
         $modelClass = $this->getModel();
-        $this->assertEquals([], collect($fillable)->diff((new $modelClass)->getFillable())->toArray());
+        $this->assertEquals([], collect($columns)->diff((new $modelClass)->getFillable())->toArray());
 
         return $this;
     }
 
-    public function assertHasHasManyRelation(string $related, string $relation): ModelsTestor
+    public function assertHasHasManyRelation(string $related, ?string $relation=null): ModelsTestor
     {
+
+        $relation = $relation ?: $this->getHasManyRelationName($related);
 
         $modelInstance = factory($this->getModel())->create();
         $relatedInstance = $modelInstance->{$relation}()->save(factory($related)->make());
@@ -108,10 +107,14 @@ class ModelsTestor extends TestCase
         return $this;
     }
 
-    public function assertHasBelongsToRelation(string $related, string $relation, string $foreignKey): ModelsTestor
+    public function assertHasBelongsToRelation(string $related, ?string $relation=null, ?string $foreignKey=null): ModelsTestor
     {
 
+        $relation = $relation ?: $this->getBelongsToRelationName($related);
+
         $relatedInstance = factory($related)->create();
+        $foreignKey=$foreignKey ?: $relatedInstance->getForeignKey();
+
         $modelInstance = factory($this->getModel())->create([$foreignKey => $relatedInstance->id]);
         $relatedInstance2 = factory($related)->create();
         $modelInstance2 = factory($this->getModel())->make();
@@ -125,8 +128,10 @@ class ModelsTestor extends TestCase
         return $this;
     }
 
-    public function assertHasManyToManyRelation(string $related, string $relation): ModelsTestor
+    public function assertHasManyToManyRelation(string $related, ?string $relation=null): ModelsTestor
     {
+
+        $relation = $relation ?: $this->getManyToManyRelationName($related);
 
         $modelInstance = factory($this->getModel())->create();
         $relatedInstance = factory($related)->create();
@@ -152,18 +157,41 @@ class ModelsTestor extends TestCase
         return $this;
     }
 
-    public function assertHasBelongsToMorphRelation(string $related, string $name): ModelsTestor
+    public function assertHasBelongsToMorphRelation(string $related, string $name, ?string $type = null, ?string $id = null): ModelsTestor
     {
+
+        [$type, $id] = $this->getMorphs($name, $type, $id);
 
         $instance = factory($related)->create();
         $morph = factory($this->getModel())->create([
-            $name.'_id'   => $instance->id,
-            $name.'_type' => $related,
+            $id   => $instance->id,
+            $type => $related,
         ]);
         $morph->refresh();
 
         $this->assertInstanceOf($related, $morph->{$name});
 
         return $this;
+    }
+
+    public function getBelongsToRelationName(string $related):string
+    {
+        return Str::snake(class_basename($related));
+    }
+
+    public function getHasManyRelationName(string $related):string
+    {
+        return Str::plural(Str::snake(class_basename($related)));
+    }
+
+    public function getManyToManyRelationName(string $related):string
+    {
+        return Str::plural(Str::snake(class_basename($related)));
+    }
+
+
+    private function getMorphs(string $name, ?string $type, ?string $id):array
+    {
+        return [$type ?: $name.'_type', $id ?: $name.'_id'];
     }
 }
