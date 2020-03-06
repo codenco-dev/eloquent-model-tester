@@ -1,4 +1,4 @@
-# Helper for Testing structures, relations of your models
+# Helper for Testing structures, relations of your models in Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/thomasdominic/models-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
 [![Build Status](https://img.shields.io/travis/thomasdominic/models-testor/master.svg?style=flat-square)](https://travis-ci.org/thomasdominic/models-testor)
