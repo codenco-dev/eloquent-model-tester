@@ -1,9 +1,11 @@
 {
     "name": "thomasdominic/models-testor",
-    "description": "",
+    "description": "Test easier your Eloquent Models in your Laravel Project",
     "keywords": [
         "thomasdominic",
         "models-testor",
+        "Eloquent",
+        "relation",
         "laravel"
     ],
     "homepage": "https://github.com/thomasdominic/models-testor",
