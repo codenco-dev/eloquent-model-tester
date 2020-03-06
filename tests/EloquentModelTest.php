@@ -2,7 +2,6 @@
 
 namespace Thomasdominic\EloquentModelTestor\Tests;
 
-
 use Thomasdominic\EloquentModelTestor\HasModelTestor;
 use Thomasdominic\EloquentModelTestor\Tests\TestModels\FirstModel;
 use Thomasdominic\EloquentModelTestor\Tests\TestModels\MorphModel;
