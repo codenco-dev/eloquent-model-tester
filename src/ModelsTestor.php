@@ -26,7 +26,7 @@ class ModelsTestor extends TestCase
         $this->table = $table;
     }
 
-    public function getModel()
+    public function getModel(): string
     {
         throw_if(is_null($this->model_testable) || !$this->isModelClass($this->model_testable),
             new \Exception("You have to use a Eloquent Model"));
@@ -34,7 +34,7 @@ class ModelsTestor extends TestCase
         return $this->model_testable;
     }
 
-    public function getTable()
+    public function getTable(): string
     {
         throw_if(!$this->isExistingTable(),
             new \Exception("You have to use an existing table"));
@@ -42,7 +42,7 @@ class ModelsTestor extends TestCase
         return $this->getModelTable();
     }
 
-    public function getModelTable()
+    public function getModelTable(): string
     {
         if (!empty($this->table)) {
             return $this->table;
@@ -53,7 +53,7 @@ class ModelsTestor extends TestCase
         return (new $modelClass)->getTable();
     }
 
-    public function isModelClass(?string $modelClass = null)
+    public function isModelClass(?string $modelClass = null): bool
     {
         if (!is_null($modelClass)) {
             return ((new $modelClass) instanceof Model);
@@ -63,7 +63,7 @@ class ModelsTestor extends TestCase
 
     }
 
-    public function isExistingTable(?string $tableName = null)
+    public function isExistingTable(?string $tableName = null): bool
     {
         if (!is_null($tableName)) {
             return Schema::hasTable($tableName);
@@ -73,8 +73,9 @@ class ModelsTestor extends TestCase
     }
 
 
-    public function assertHasColumns(array $columns)
+    public function assertHasColumns(array $columns): ModelsTestor
     {
+
         collect($columns)->each(function ($column) {
             $this->assertTrue(in_array($column, Schema::getColumnListing($this->getTable())));
         });
@@ -83,100 +84,86 @@ class ModelsTestor extends TestCase
     }
 
 
-    public function assertCanFillables(array $fillable = [])
+    public function assertCanFillables(array $fillable = []): ModelsTestor
     {
+
         $modelClass = $this->getModel();
         $this->assertEquals([], collect($fillable)->diff((new $modelClass)->getFillable())->toArray());
-        return $this;
-    }
-
-    public function assertHasHasManyRelations(array $hasManyRelations)
-    {
-        foreach ($hasManyRelations as $relation) {
-            $model = factory($this->getModel())->create();
-            $related = $model->{$relation['relation_name']}()->save(factory($relation['relation_class'])->make());
-            $model->refresh();
-            $this->assertTrue($model->{$relation['relation_name']}->contains($related));
-            $this->assertEquals(1, $model->{$relation['relation_name']}->count());
-
-            $this->assertInstanceOf(Collection::class, $model->{$relation['relation_name']});
-            $this->assertInstanceOf($relation['relation_class'], $model->{$relation['relation_name']}->first());
-        }
 
         return $this;
     }
 
-    public function assertHasBelongsToRelations(array $belongsToRelations)
+    public function assertHasHasManyRelation(string $related, string $relation): ModelsTestor
     {
 
+        $modelInstance = factory($this->getModel())->create();
+        $relatedInstance = $modelInstance->{$relation}()->save(factory($related)->make());
+        $modelInstance->refresh();
 
-        foreach ($belongsToRelations as $relation) {
-
-            $related = factory($relation['relation_class'])->create();
-
-            $model = factory($this->getModel())->create([$relation['relation_foreign_key'] => $related->id]);
-
-
-            $this->assertEquals($model->{$relation['relation_name']}->id, $related->id);
-            $this->assertInstanceOf($relation['relation_class'], $model->{$relation['relation_name']});
-
-            $related2 = factory($relation['relation_class'])->create();
-            $model2 = factory($this->getModel())->make();
-            $model2->{$relation['relation_name']}()->associate($related2)->save();
-
-            $this->assertEquals($model2->{$relation['relation_foreign_key']}, $related2->id);
-            $this->assertInstanceOf($relation['relation_class'], $model2->{$relation['relation_name']});
-        }
+        $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
+        $this->assertEquals(1, $modelInstance->{$relation}->count());
+        $this->assertInstanceOf(Collection::class, $modelInstance->{$relation});
+        $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
 
         return $this;
     }
 
-    public function assertHasManyToManyRelations(array $manyToManyRelations)
+    public function assertHasBelongsToRelation(string $related, string $relation, string $foreignKey): ModelsTestor
     {
 
-        foreach ($manyToManyRelations as $relation) {
+        $relatedInstance = factory($related)->create();
+        $modelInstance = factory($this->getModel())->create([$foreignKey => $relatedInstance->id]);
+        $relatedInstance2 = factory($related)->create();
+        $modelInstance2 = factory($this->getModel())->make();
+        $modelInstance2->{$relation}()->associate($relatedInstance2)->save();
 
-            $model = factory($this->getModel())->create();
-            $related = factory($relation['relation_class'])->create();
-            $model->{$relation['relation_name']}()->attach($related);
-
-            $this->assertTrue($model->{$relation['relation_name']}->contains($related));
-            $this->assertEquals($related->id, $model->{$relation['relation_name']}->first()->id);
-            $this->assertEquals(1, $model->{$relation['relation_name']}->count());
-            $this->assertInstanceOf($relation['relation_class'], $model->{$relation['relation_name']}->first());
-
-        }
+        $this->assertEquals($modelInstance->{$relation}->id, $relatedInstance->id);
+        $this->assertInstanceOf($related, $modelInstance->{$relation});
+        $this->assertEquals($modelInstance2->{$foreignKey}, $relatedInstance2->id);
+        $this->assertInstanceOf($related, $modelInstance2->{$relation});
 
         return $this;
     }
 
-    public function assertHasHasManyMorphRelations(array $hasManyMorphRelations)
+    public function assertHasManyToManyRelation(string $related, string $relation): ModelsTestor
     {
 
-        foreach ($hasManyMorphRelations as $relation) {
+        $modelInstance = factory($this->getModel())->create();
+        $relatedInstance = factory($related)->create();
+        $modelInstance->{$relation}()->attach($relatedInstance);
 
-            $morphable = factory($this->getModel())->create();
-            $morphable->{$relation['morph_relation']}()->save(factory($relation['morph_model_class'])->make());
+        $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
+        $this->assertEquals($relatedInstance->id, $modelInstance->{$relation}->first()->id);
+        $this->assertEquals(1, $modelInstance->{$relation}->count());
+        $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
 
-            $morphable->refresh();
-            $this->assertInstanceOf($relation['morph_model_class'], $morphable->{$relation['morph_relation']}->first());
-        }
+        return $this;
     }
 
-    public function assertHasBelongsToMorphRelations(array $belongsToMorphRelations)
+    public function assertHasHasManyMorphRelation(string $related, string $name): ModelsTestor
     {
 
+        $instance = factory($this->getModel())->create();
+        $instance->{$name}()->save(factory($related)->make());
+        $instance->refresh();
 
-        foreach ($belongsToMorphRelations as $relation) {
-            $morphable = factory($relation['morphable_model_class'])->create();
-            $morph = factory($this->getModel())->create([
-                $relation['morph_relation'].'_id'   => $morphable->id,
-                $relation['morph_relation'].'_type' => $relation['morphable_model_class'],
-            ]);
+        $this->assertInstanceOf($related, $instance->{$name}->first());
 
-            $morph->refresh();
-            $this->assertInstanceOf($relation['morphable_model_class'], $morph->{$relation['morph_relation']});
-        }
+        return $this;
+    }
 
+    public function assertHasBelongsToMorphRelation(string $related, string $name): ModelsTestor
+    {
+
+        $instance = factory($related)->create();
+        $morph = factory($this->getModel())->create([
+            $name.'_id'   => $instance->id,
+            $name.'_type' => $related,
+        ]);
+        $morph->refresh();
+
+        $this->assertInstanceOf($related, $morph->{$name});
+
+        return $this;
     }
 }

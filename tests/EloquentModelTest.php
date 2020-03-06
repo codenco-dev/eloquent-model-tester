@@ -35,12 +35,7 @@ class EloquentModelTest extends TestCase
         $this->modelTestable(FirstModel::class)
             ->assertHasColumns(['id', 'name',])
             ->assertCanFillables(['name'])
-            ->assertHasHasManyRelations([
-                [
-                    'relation_class' => SecondModel::class,
-                    'relation_name'  => 'second_models',
-                ],
-            ]);
+            ->assertHasHasManyRelation(SecondModel::class,'second_models');
     }
 
     public function test_have_second_model_model()
@@ -48,26 +43,9 @@ class EloquentModelTest extends TestCase
         $this->modelTestable(SecondModel::class)
             ->assertHasColumns(['id', 'name', 'first_model_id',])
             ->assertCanFillables(['name', 'first_model_id'])
-            ->assertHasBelongsToRelations([
-                [
-                    'relation_class'       => FirstModel::class,
-                    'relation_name'        => 'first_model',
-                    'relation_foreign_key' => 'first_model_id',
-                ],
-            ])
-            ->assertHasManyToManyRelations([
-                [
-                    'relation_class' => ThirdModel::class,
-                    'relation_name'  => 'third_models',
-                ],
-            ])
-            ->assertHasHasManyMorphRelations([
-                    [
-                        'morph_model_class'     => MorphModel::class,
-                        'morph_relation'        => 'morph_models',
-                    ],
-                ]
-            );
+            ->assertHasBelongsToRelation(FirstModel::class,'first_model','first_model_id')
+            ->assertHasManyToManyRelation(ThirdModel::class,'third_models')
+            ->assertHasHasManyMorphRelation(MorphModel::class,'morph_models');
     }
 
     public function test_have_third_model_model()
@@ -77,12 +55,7 @@ class EloquentModelTest extends TestCase
                 'id', 'name',
             ])
             ->assertCanFillables(['name'])
-            ->assertHasManyToManyRelations([
-                [
-                    'relation_class' => SecondModel::class,
-                    'relation_name'  => 'second_models',
-                ],
-            ]);
+            ->assertHasManyToManyRelation(SecondModel::class,'second_models');
     }
 
     public function test_have_morph_model_model()
@@ -90,13 +63,7 @@ class EloquentModelTest extends TestCase
         $this->modelTestable(MorphModel::class)
             ->assertHasColumns(['id','name','morph_modelable_type','morph_modelable_id',])
             ->assertCanFillables(['name','morph_modelable_type','morph_modelable_id'])
-            ->assertHasBelongsToMorphRelations([
-                    [
-                        'morphable_model_class' => SecondModel::class,
-                        'morph_relation'        => 'morph_modelable',
-                    ],
-                ]
-            );
+            ->assertHasBelongsToMorphRelation(SecondModel::class,'morph_modelable');
     }
 
     public function test_have_table_without_model()
