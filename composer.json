@@ -1,14 +1,14 @@
 {
-    "name": "thomasdominic/models-testor",
+    "name": "thomasdominic/eloquent-model-testor",
     "description": "Test easier your Eloquent Models in your Laravel Project",
     "keywords": [
         "thomasdominic",
-        "models-testor",
+        "eloquent-model-testor",
         "Eloquent",
         "relation",
         "laravel"
     ],
-    "homepage": "https://github.com/thomasdominic/models-testor",
+    "homepage": "https://github.com/thomasdominic/eloquent-model-testor",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -43,15 +43,5 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Thomasdominic\\ModelsTestor\\ModelsTestorServiceProvider"
-            ],
-            "aliases": {
-                "ModelsTestor": "Thomasdominic\\ModelsTestor\\ModelsTestorFacade"
-            }
-        }
     }
 }
