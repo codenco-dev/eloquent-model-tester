@@ -25,6 +25,8 @@ class UnitModelTestorTest extends TestCase
     {
         $this->assertFalse((new ModelsTestor(null, 'not_exists'))->isExistingTable());
         $this->assertTrue((new ModelsTestor(null, 'first_models'))->isExistingTable());
+
+        $this->assertTrue((new ModelsTestor(FirstModel::class))->isExistingTable());
     }
 
     /**

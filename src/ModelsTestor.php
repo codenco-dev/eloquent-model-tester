@@ -31,7 +31,7 @@ class ModelsTestor extends TestCase
 
     public function getTable(): string
     {
-        throw_if(! $this->isExistingTable(),
+        throw_if(! $this->isExistingTable($this->table),
             new \Exception('You have to use an existing table'));
 
         return $this->getModelTable();

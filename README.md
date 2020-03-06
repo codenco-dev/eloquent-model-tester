@@ -37,18 +37,18 @@ With this structure
 you can test if you have all the fields you need and if they are fillable.
 
 ``` php
-    class UserTest extends TestCase
-    {
-        use ModelsTestor;
-        
-        public function test_have_user_model()
-        {
-            $this->modelTestable(User::class)
-                ->assertHasColumns(['id','name','other_field'])
-                ->assertCanFillables(['name','other_field']);
-        }
+class UserTest extends TestCase
+{
+    use ModelsTestor;
     
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasColumns(['id','name','other_field'])
+            ->assertCanFillables(['name','other_field']);
     }
+
+}
 ```
 
 ### HasMany et BelongsTo
@@ -97,10 +97,11 @@ If you don't use Laravel naming convention, you may also override the relation a
 additional arguments to the `assertHasHasManyRelations` and `assertHasBelongsToRelations` methods
 
 ``` php
-$this->modelTestable(Customer::class)
-            ->assertHasBelongsToRelations(Category::class,'category','category_id');
-$this->modelTestable(Category::class)
-            ->assertHasHasManyRelations(Customer::class,'customers');
+    $this->modelTestable(Customer::class)
+            ->assertHasBelongsToRelation(Category::class,'category','category_id');
+
+    $this->modelTestable(Category::class)
+            ->assertHasHasManyRelation(Customer::class,'customers');
 
 ```
 
@@ -133,36 +134,36 @@ You can test your ManyToMany relations with the `ManyToManyRelationsTestable` tr
 
 
 ```php
-    class UserTest extends TestCase
+class UserTest extends TestCase
+{
+     use ModelsTestor;
+     
+    public function test_have_user_model()
     {
-         use ModelsTestor;
-         
-        public function test_have_user_model()
-        {
-            $this->modelTestable(User::class)
-                ->assertHasManyToManyRelation(Role::class);
-        }
-
-
+        $this->modelTestable(User::class)
+            ->assertHasManyToManyRelation(Role::class);
     }
 
-    class RoleTest extends TestCase
+
+}
+
+class RoleTest extends TestCase
+{
+    use ModelsTestor;
+
+    public function test_have_role_model()
     {
-        use ModelsTestor;
-
-        public function test_have_role_model()
-        {
-            $this->modelTestable(User::class)
-                ->assertHasManyToManyRelation(User::class);
-        }
-
+        $this->modelTestable(User::class)
+            ->assertHasManyToManyRelation(User::class);
     }
+
+}
 ```
 
 You can override the relation argument too : 
 ```php
-$this->modelTestable(User::class)
-                ->assertHasManyToManyRelation(User::class,'users');
+    $this->modelTestable(User::class)
+            ->assertHasManyToManyRelation(User::class,'users');
 ```
   
 
@@ -190,41 +191,41 @@ If you have a Morph Relation,
 you can use `assertHasBelongsToMorphRelations` and `assertHasHasManyMorphRelations` methods like this
 
 ```php
-    class PostTest extends TestCase
-    {
-        
-        use ModelsTestor;
-                    
-        public function test_have_post_model()
-            {
-                $this->modelTestable(Post::class)
-                    ->assertHasHasManyMorphRelation(Comment::class,'comments');
-            }
-    }
+class PostTest extends TestCase
+{
     
-    class VideoTest extends TestCase
+    use ModelsTestor;
+                
+    public function test_have_post_model()
         {
-            use ModelsTestor;
-            
-            public function test_have_video_model()
-                {
-                    $this->modelTestable(Video::class)
-                        ->assertHasHasManyMorphRelation(Comment::class,'comments');
-                }
+            $this->modelTestable(Post::class)
+                ->assertHasHasManyMorphRelation(Comment::class,'comments');
         }
+}
 
-    class CommentTest extends TestCase
+class VideoTest extends TestCase
+{
+    use ModelsTestor;
+    
+    public function test_have_video_model()
         {
-            
-            use ModelsTestor;
-            
-            public function test_have_morph_model_model()
-            {
-                $this->modelTestable(Comment::class)
-                   ->assertHasBelongsToMorphRelation(Post::class,'commentable')
-                   ->assertHasBelongsToMorphRelation(Video::class,'commentable');
-            }
+            $this->modelTestable(Video::class)
+                ->assertHasHasManyMorphRelation(Comment::class,'comments');
         }
+}
+
+class CommentTest extends TestCase
+{
+    
+    use ModelsTestor;
+    
+    public function test_have_morph_model_model()
+    {
+        $this->modelTestable(Comment::class)
+           ->assertHasBelongsToMorphRelation(Post::class,'commentable')
+           ->assertHasBelongsToMorphRelation(Video::class,'commentable');
+    }
+}
 ```
 
 ### Pivot and table without Model
@@ -232,14 +233,14 @@ you can use `assertHasBelongsToMorphRelations` and `assertHasHasManyMorphRelatio
 You can test if a table contains columns with the `tableTestable` method 
 
 ```php
-    class MyPivotTest extends TestCase
+class MyPivotTest extends TestCase
+{
+    public function test_have_table_without_model()
     {
-        public function test_have_table_without_model()
-        {
-            $this->tableTestable('pivot_table')
-                ->assertHasColumns(['first_model_id','second_model_id','other_property']);
-        }
+        $this->tableTestable('pivot_table')
+            ->assertHasColumns(['first_model_id','second_model_id','other_property']);
     }
+}
 ```
 
 ### Testing
