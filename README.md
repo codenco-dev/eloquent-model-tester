@@ -1,9 +1,10 @@
 # Helper for Testing structures, relations of your models in Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/thomasdominic/models-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
-[![Build Status](https://travis-ci.com/thomasdominic/models-testor.svg?branch=master)](https://travis-ci.org/thomasdominic/models-testor)
-[![Quality Score](https://scrutinizer-ci.com/g/thomasdominic/models-testor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thomasdominic/models-testor)
-[![Total Downloads](https://img.shields.io/packagist/dt/thomasdominic/models-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/thomasdominic/eloquent-model-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/eloquent-model-testor)
+[![StyleCI](https://github.styleci.io/repos/245467771/shield?branch=master)](https://github.styleci.io/repos/245467771)
+[![Build Status](https://travis-ci.com/thomasdominic/eloquent-model-testor.svg?branch=master)](https://travis-ci.com/thomasdominic/eloquent-model-testor)
+[![Quality Score](https://scrutinizer-ci.com/g/thomasdominic/eloquent-model-testor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thomasdominic/eloquent-model-testor)
+[![Total Downloads](https://img.shields.io/packagist/dt/thomasdominic/eloquent-model-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
 
 This package allows you to test your models about table structures, relations and more
 
@@ -12,13 +13,13 @@ This package allows you to test your models about table structures, relations an
 You can install the package via composer:
 
 ```bash
-composer require thomasdominic/models-testor
+composer require thomasdominic/eloquent-model-testor
 ```
 
 ## Usage
 
 To use this package, you have to generate factories for your models. (See [Factories Documentation](https://laravel.com/docs/6.x/database-testing#writing-factories)) 
-You can generate one test file by model or by several. For your model `MyModel` you can use this command for example: 
+You can generate one test file by model or for several. For your model `MyModel` you can use this command for example: 
 
 ```bash
 php artisan make:test Models/MyModelTest
