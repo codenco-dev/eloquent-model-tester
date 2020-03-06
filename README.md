@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/thomasdominic/models-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
 [![Build Status](https://travis-ci.com/thomasdominic/models-testor.svg?branch=master)](https://travis-ci.org/thomasdominic/models-testor)
-[![Quality Score](https://img.shields.io/scrutinizer/g/thomasdominic/models-testor.svg?style=flat-square)](https://scrutinizer-ci.com/g/thomasdominic/models-testor)
+[![Quality Score](https://scrutinizer-ci.com/g/thomasdominic/models-testor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thomasdominic/models-testor)
 [![Total Downloads](https://img.shields.io/packagist/dt/thomasdominic/models-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
 
 This package allows you to test your models about table structures, relations and more
