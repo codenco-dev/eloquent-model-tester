@@ -22,6 +22,7 @@ To use this package, you have to generate factories for your models. (See [Facto
 You can generate one test file by model or for several. For your model `MyModel` you can use this command for example: 
 
 ```bash
+php artisan make:model MyModel -mf
 php artisan make:test Models/MyModelTest
 ```
 
@@ -40,7 +41,7 @@ you can test if you have all the fields you need and if they are fillable.
 ``` php
 class UserTest extends TestCase
 {
-    use ModelsTestor;
+    use HasModelTestor;
     
     public function test_have_user_model()
     {
@@ -72,7 +73,7 @@ you can use `assertHasHasManyRelations` and `assertHasBelongsToRelations` method
 class CategoryTest extends TestCase
 {
     
-    use ModelsTestor;
+    use HasModelTestor;
     
     public function test_have_category_model()
     {
@@ -84,7 +85,7 @@ class CategoryTest extends TestCase
 
 class CustomerTest extends TestCase
 {
-    use ModelsTestor;
+    use HasModelTestor;
 
     public function test_have_customer_model()
     {
@@ -137,7 +138,7 @@ You can test your ManyToMany relations with the `ManyToManyRelationsTestable` tr
 ```php
 class UserTest extends TestCase
 {
-     use ModelsTestor;
+     use HasModelTestor;
      
     public function test_have_user_model()
     {
@@ -150,7 +151,7 @@ class UserTest extends TestCase
 
 class RoleTest extends TestCase
 {
-    use ModelsTestor;
+    use HasModelTestor;
 
     public function test_have_role_model()
     {
@@ -195,7 +196,7 @@ you can use `assertHasBelongsToMorphRelations` and `assertHasHasManyMorphRelatio
 class PostTest extends TestCase
 {
     
-    use ModelsTestor;
+    use HasModelTestor;
                 
     public function test_have_post_model()
         {
@@ -206,7 +207,7 @@ class PostTest extends TestCase
 
 class VideoTest extends TestCase
 {
-    use ModelsTestor;
+    use HasModelTestor;
     
     public function test_have_video_model()
         {
@@ -218,7 +219,7 @@ class VideoTest extends TestCase
 class CommentTest extends TestCase
 {
     
-    use ModelsTestor;
+    use HasModelTestor;
     
     public function test_have_morph_model_model()
     {

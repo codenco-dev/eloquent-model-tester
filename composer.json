@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Thomasdominic\\ModelsTestor\\": "src"
+            "Thomasdominic\\EloquentModelTestor\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Thomasdominic\\ModelsTestor\\Tests\\": "tests"
+            "Thomasdominic\\EloquentModelTestor\\Tests\\": "tests"
         }
     },
     "scripts": {

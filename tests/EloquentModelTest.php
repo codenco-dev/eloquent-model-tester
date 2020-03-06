@@ -1,16 +1,17 @@
 <?php
 
-namespace Thomasdominic\ModelsTestor\Tests;
+namespace Thomasdominic\EloquentModelTestor\Tests;
 
-use Thomasdominic\ModelsTestor\ModelsTestorTrait;
-use Thomasdominic\ModelsTestor\Tests\TestModels\FirstModel;
-use Thomasdominic\ModelsTestor\Tests\TestModels\MorphModel;
-use Thomasdominic\ModelsTestor\Tests\TestModels\SecondModel;
-use Thomasdominic\ModelsTestor\Tests\TestModels\ThirdModel;
+
+use Thomasdominic\EloquentModelTestor\HasModelTestor;
+use Thomasdominic\EloquentModelTestor\Tests\TestModels\FirstModel;
+use Thomasdominic\EloquentModelTestor\Tests\TestModels\MorphModel;
+use Thomasdominic\EloquentModelTestor\Tests\TestModels\SecondModel;
+use Thomasdominic\EloquentModelTestor\Tests\TestModels\ThirdModel;
 
 class EloquentModelTest extends TestCase
 {
-    use ModelsTestorTrait;
+    use HasModelTestor;
 
     /**
      * @test

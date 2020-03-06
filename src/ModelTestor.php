@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomasdominic\ModelsTestor;
+namespace Thomasdominic\EloquentModelTestor;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\TestCase;
 
-class ModelsTestor extends TestCase
+class ModelTestor extends TestCase
 {
     private ?string $tested;
 

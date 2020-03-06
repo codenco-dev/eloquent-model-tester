@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomasdominic\ModelsTestor\Tests\TestModels;
+namespace Thomasdominic\EloquentModelTestor\Tests\TestModels;
 
 class NotAModel
 {
