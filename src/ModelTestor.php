@@ -135,13 +135,15 @@ class ModelTestor extends TestCase
         return $this;
     }
 
-    public function assertHasHasManyMorphRelation(string $related, string $name): self
+    public function assertHasHasManyMorphRelation(string $related, ?string $relation = null): self
     {
+        $relation = $relation ?: $this->getHasManyRelationName($related);
+
         $instance = factory($this->getModel())->create();
-        $instance->{$name}()->save(factory($related)->make());
+        $instance->{$relation}()->save(factory($related)->make());
         $instance->refresh();
 
-        $this->assertInstanceOf($related, $instance->{$name}->first());
+        $this->assertInstanceOf($related, $instance->{$relation}->first());
 
         return $this;
     }
