@@ -13,7 +13,7 @@ This package allows you to test your models about table structures, relations an
 You can install the package via composer:
 
 ```bash
-composer require thomasdominic/eloquent-model-testor
+composer require thomasdominic/eloquent-model-testor --dev
 ```
 
 ## Usage
