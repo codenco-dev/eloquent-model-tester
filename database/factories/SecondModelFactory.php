@@ -2,8 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use Faker\Generator as Faker;
 use CodencoDev\EloquentModelTester\Tests\TestModels\SecondModel;
+use Faker\Generator as Faker;
 
 $factory->define(SecondModel::class, function (Faker $faker) {
     return [

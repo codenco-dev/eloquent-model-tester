@@ -12,7 +12,6 @@ class ModelTesterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 
     /**

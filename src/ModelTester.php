@@ -18,6 +18,7 @@ class ModelTester extends TestCase
     {
         $this->tested = $tested;
         $this->table = $table;
+
         return $this;
     }
 
