@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomasdominic\EloquentModelTestor\Tests\TestModels;
+namespace CodencoDev\EloquentModelTester\Tests\TestModels;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

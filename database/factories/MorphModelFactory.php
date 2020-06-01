@@ -3,7 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
-use Thomasdominic\EloquentModelTestor\Tests\TestModels\MorphModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
 
 $factory->define(MorphModel::class, function (Faker $faker) {
     return [

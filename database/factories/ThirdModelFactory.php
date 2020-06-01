@@ -3,7 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
-use Thomasdominic\EloquentModelTestor\Tests\TestModels\ThirdModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\ThirdModel;
 
 $factory->define(ThirdModel::class, function (Faker $faker) {
     return [

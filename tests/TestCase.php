@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomasdominic\EloquentModelTestor\Tests;
+namespace CodencoDev\EloquentModelTester\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;

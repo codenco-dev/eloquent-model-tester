@@ -1,16 +1,16 @@
 <?php
 
-namespace Thomasdominic\EloquentModelTestor\Tests;
+namespace CodencoDev\EloquentModelTester\Tests;
 
-use Thomasdominic\EloquentModelTestor\HasModelTestor;
-use Thomasdominic\EloquentModelTestor\Tests\TestModels\FirstModel;
-use Thomasdominic\EloquentModelTestor\Tests\TestModels\MorphModel;
-use Thomasdominic\EloquentModelTestor\Tests\TestModels\SecondModel;
-use Thomasdominic\EloquentModelTestor\Tests\TestModels\ThirdModel;
+use CodencoDev\EloquentModelTester\HasModelTester;
+use CodencoDev\EloquentModelTester\Tests\TestModels\FirstModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\SecondModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\ThirdModel;
 
 class EloquentModelTest extends TestCase
 {
-    use HasModelTestor;
+    use HasModelTester;
 
     /**
      * @test

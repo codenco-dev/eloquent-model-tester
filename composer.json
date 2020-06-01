@@ -1,14 +1,14 @@
 {
-    "name": "thomasdominic/eloquent-model-testor",
+    "name": "codenco-dev/eloquent-model-tester",
     "description": "Test easier your Eloquent Models in your Laravel Project",
     "keywords": [
         "thomasdominic",
-        "eloquent-model-testor",
+        "eloquent-model-tester",
         "Eloquent",
         "relation",
         "laravel"
     ],
-    "homepage": "https://github.com/thomasdominic/eloquent-model-testor",
+    "homepage": "https://github.com/thomasdominic/eloquent-model-tester",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Thomasdominic\\EloquentModelTestor\\": "src"
+            "CodencoDev\\EloquentModelTester\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Thomasdominic\\EloquentModelTestor\\Tests\\": "tests"
+            "CodencoDev\\EloquentModelTester\\Tests\\": "tests"
         }
     },
     "scripts": {

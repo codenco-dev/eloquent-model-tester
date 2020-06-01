@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomasdominic\EloquentModelTestor;
+namespace CodencoDev\EloquentModelTester;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -8,17 +8,17 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\TestCase;
 
-class ModelTestor extends TestCase
+class ModelTester extends TestCase
 {
     private ?string $tested;
 
     private ?string $table;
 
-    public function __construct(?string $tested, ?string $table = null)
+    public function create(?string $tested, ?string $table = null)
     {
-        parent::__construct();
         $this->tested = $tested;
         $this->table = $table;
+        return $this;
     }
 
     public function getModel(): ?string
