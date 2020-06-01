@@ -2,7 +2,6 @@
 
 namespace CodencoDev\EloquentModelTester;
 
-use CodencoDev\EloquentModelTester\ModelTester;
 use Illuminate\Support\ServiceProvider;
 
 class ModelTesterServiceProvider extends ServiceProvider
