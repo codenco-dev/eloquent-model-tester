@@ -26,6 +26,30 @@ php artisan make:model MyModel -mf
 php artisan make:test Models/MyModelTest
 ```
 
+To be able to test database, don't forget `RefreshDatabase` use statements.
+
+```
+namespace Tests\Feature\Models;
+
+use App\MyModel;
+use CodencoDev\EloquentModelTester\HasModelTester;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class MyModelTest extends TestCase
+{
+    use RefreshDatabase;
+    use HasModelTester;
+    
+    public function test_have_my_model_model()
+    {
+        //...
+    }
+}
+``` 
+
+For more simplicity, you can pu the `RefreshDatabase` use statement in `tests/TestCase.php` file
+
 ### Test of structure and of fillable
 
 With this structure
@@ -46,10 +70,9 @@ class UserTest extends TestCase
     public function test_have_user_model()
     {
         $this->modelTestable(User::class)
-            ->assertHasColumns(['id','name','other_field'])
-            ->assertCanFillables(['name','other_field']);
+            ->assertHasColumns(['id','name','email','password','remember_token'])
+            ->assertCanFillables(['name','password']);
     }
-
 }
 ```
 
@@ -71,8 +94,7 @@ you can use `assertHasHasManyRelations` and `assertHasBelongsToRelations` method
 
 ``` php
 class CategoryTest extends TestCase
-{
-    
+{ 
     use HasModelTestor;
     
     public function test_have_category_model()
