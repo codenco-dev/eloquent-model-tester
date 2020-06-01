@@ -1,6 +1,6 @@
 <?php
 
-namespace CodencoDev\ExternalApiCallRecorder;
+namespace CodencoDev\EloquentModelTester;
 
 use CodencoDev\EloquentModelTester\ModelTester;
 use Illuminate\Support\ServiceProvider;
