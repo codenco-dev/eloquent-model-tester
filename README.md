@@ -4,7 +4,7 @@
 [![StyleCI](https://github.styleci.io/repos/268515827/shield?branch=master)](https://github.styleci.io/repos/268515827)
 [![Build Status](https://travis-ci.com/codenco-dev/eloquent-model-tester.svg?branch=master)](https://travis-ci.com/thomasdominic/eloquent-model-tester)
 [![Quality Score](https://scrutinizer-ci.com/g/codenco-dev/eloquent-model-tester/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thomasdominic/eloquent-model-testor)
-[![Total Downloads](https://img.shields.io/packagist/dt/codenco-dev/eloquent-model-testor.svg?style=flat-square)](https://packagist.org/packages/thomasdominic/models-testor)
+[![Total Downloads](https://img.shields.io/packagist/dt/codenco-dev/eloquent-model-tester.svg?style=flat-square)](https://packagist.org/packages/codenco-dev/eloquent-model-tester)
 
 This package allows you to test your models about table structures, relations and more
 
