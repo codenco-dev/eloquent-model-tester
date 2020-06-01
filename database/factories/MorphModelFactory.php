@@ -2,8 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use Faker\Generator as Faker;
 use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
+use Faker\Generator as Faker;
 
 $factory->define(MorphModel::class, function (Faker $faker) {
     return [
