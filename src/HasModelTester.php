@@ -2,8 +2,6 @@
 
 namespace CodencoDev\EloquentModelTester;
 
-use CodencoDev\EloquentModelTester\ModelTesterFacade;
-
 trait HasModelTester
 {
     public function modelTestable(string $modelClass, ?string $table = null)
