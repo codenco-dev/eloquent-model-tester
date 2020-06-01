@@ -48,7 +48,7 @@ class MyModelTest extends TestCase
 }
 ``` 
 
-For more simplicity, you can pu the `RefreshDatabase` use statement in `tests/TestCase.php` file
+For more simplicity, you can put the `RefreshDatabase` use statement in `tests/TestCase.php` file
 
 ### Test of structure and of fillable
 
