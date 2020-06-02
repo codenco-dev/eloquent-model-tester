@@ -24,7 +24,7 @@ class ModelTester extends TestCase
 
     public function getModel(): ?string
     {
-        throw_if(is_null($this->tested) || !$this->isModelClass($this->tested),
+        throw_if(is_null($this->tested) || ! $this->isModelClass($this->tested),
             new \Exception('You have to use a Eloquent Model'));
 
         return $this->tested;
@@ -32,7 +32,7 @@ class ModelTester extends TestCase
 
     public function getTable(): string
     {
-        throw_if(!$this->isExistingTable($this->table),
+        throw_if(! $this->isExistingTable($this->table),
             new \Exception('You have to use an existing table'));
 
         return $this->getModelTable();
@@ -40,7 +40,7 @@ class ModelTester extends TestCase
 
     public function getModelTable(): string
     {
-        if (!empty($this->table)) {
+        if (! empty($this->table)) {
             return $this->table;
         }
 
@@ -51,7 +51,7 @@ class ModelTester extends TestCase
 
     public function isModelClass(?string $modelClass = null): bool
     {
-        if (!is_null($modelClass)) {
+        if (! is_null($modelClass)) {
             return (new $modelClass) instanceof Model;
         } else {
             return (new $this->tested) instanceof Model;
@@ -60,7 +60,7 @@ class ModelTester extends TestCase
 
     public function isExistingTable(?string $tableName = null): bool
     {
-        if (!is_null($tableName)) {
+        if (! is_null($tableName)) {
             return Schema::hasTable($tableName);
         } else {
             return Schema::hasTable($this->getModelTable());
@@ -182,6 +182,6 @@ class ModelTester extends TestCase
 
     private function getMorphs(string $name, ?string $type, ?string $id): array
     {
-        return [$type ?: $name . '_type', $id ?: $name . '_id'];
+        return [$type ?: $name.'_type', $id ?: $name.'_id'];
     }
 }
