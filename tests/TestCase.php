@@ -10,7 +10,7 @@ abstract class TestCase extends Orchestra
     public function setUp(): void
     {
         parent::setUp();
-        $this->withFactories(realpath(dirname(__DIR__).'/database/factories'));
+        //$this->withFactories(realpath(dirname(__DIR__).'/database/factories'));
         $this->setUpDatabase();
     }
 

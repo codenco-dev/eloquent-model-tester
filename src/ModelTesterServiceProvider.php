@@ -20,7 +20,7 @@ class ModelTesterServiceProvider extends ServiceProvider
     {
 
         // Register the main class to use with the facade
-        $this->app->bind('external-api-call-recorder', function () {
+        $this->app->bind('model-tester', function () {
             return new ModelTester;
         });
     }

@@ -1,12 +1,28 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use CodencoDev\EloquentModelTester\Tests\TestModels\ThirdModel;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(ThirdModel::class, function (Faker $faker) {
-    return [
-        'name' => $faker->word(),
-    ];
-});
+class ThirdModelFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = ThirdModel::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->word(),
+        ];
+    }
+}

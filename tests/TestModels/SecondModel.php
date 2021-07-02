@@ -2,6 +2,8 @@
 
 namespace CodencoDev\EloquentModelTester\Tests\TestModels;
 
+use Database\Factories\SecondModelFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class SecondModel extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
 
     protected $fillable = ['id', 'name', 'first_model_id'];
@@ -26,5 +30,10 @@ class SecondModel extends Model
     public function morph_models(): MorphMany
     {
         return $this->morphMany(MorphModel::class, 'morph_modelable');
+    }
+
+    protected static function newFactory()
+    {
+        return SecondModelFactory::new();
     }
 }

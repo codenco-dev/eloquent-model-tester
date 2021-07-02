@@ -88,8 +88,8 @@ class ModelTester extends TestCase
     {
         $relation = $relation ?: $this->getHasManyRelationName($related);
 
-        $modelInstance = factory($this->getModel())->create();
-        $relatedInstance = $modelInstance->{$relation}()->save(factory($related)->make());
+        $modelInstance = $this->getModel()::factory()->create();
+        $relatedInstance = $modelInstance->{$relation}()->save($related::factory()->make());
         $modelInstance->refresh();
 
         $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
@@ -104,12 +104,12 @@ class ModelTester extends TestCase
     {
         $relation = $relation ?: $this->getBelongsToRelationName($related);
 
-        $relatedInstance = factory($related)->create();
+        $relatedInstance = $related::factory()->create();
         $foreignKey = $foreignKey ?: $relatedInstance->getForeignKey();
 
-        $modelInstance = factory($this->getModel())->create([$foreignKey => $relatedInstance->id]);
-        $relatedInstance2 = factory($related)->create();
-        $modelInstance2 = factory($this->getModel())->make();
+        $modelInstance = $this->getModel()::factory()->create([$foreignKey => $relatedInstance->id]);
+        $relatedInstance2 = $related::factory()->create();
+        $modelInstance2 = $this->getModel()::factory()->make();
         $modelInstance2->{$relation}()->associate($relatedInstance2)->save();
 
         $this->assertEquals($modelInstance->{$relation}->id, $relatedInstance->id);
@@ -124,8 +124,8 @@ class ModelTester extends TestCase
     {
         $relation = $relation ?: $this->getManyToManyRelationName($related);
 
-        $modelInstance = factory($this->getModel())->create();
-        $relatedInstance = factory($related)->create();
+        $modelInstance = $this->getModel()::factory()->create();
+        $relatedInstance = $related::factory()->create();
         $modelInstance->{$relation}()->attach($relatedInstance);
 
         $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
@@ -140,8 +140,8 @@ class ModelTester extends TestCase
     {
         $relation = $relation ?: $this->getHasManyRelationName($related);
 
-        $instance = factory($this->getModel())->create();
-        $instance->{$relation}()->save(factory($related)->make());
+        $instance = $this->getModel()::factory()->create();
+        $instance->{$relation}()->save($related::factory()->make());
         $instance->refresh();
 
         $this->assertInstanceOf($related, $instance->{$relation}->first());
@@ -153,8 +153,8 @@ class ModelTester extends TestCase
     {
         [$type, $id] = $this->getMorphs($name, $type, $id);
 
-        $instance = factory($related)->create();
-        $morph = factory($this->getModel())->create([
+        $instance = $related::factory()->create();
+        $morph = $this->getModel()::factory()->create([
             $id => $instance->id,
             $type => $related,
         ]);
