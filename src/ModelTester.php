@@ -84,7 +84,13 @@ class ModelTester extends TestCase
     public function assertCanFillables(array $columns = []): self
     {
         $modelClass = $this->getModel();
-        $notFillable = collect($columns)->diff((new $modelClass)->getFillable());
+        $modelObject = new $modelClass;
+        $notFillable = collect([]);
+        foreach ($columns as $column){
+            if( ! $modelObject->isFillable($column)){
+               $notFillable->push($column);
+            }
+        }
         $this->assertEquals([], $notFillable->toArray(),
             sprintf(
                 'Column %s isn\'t mass fillable.',
