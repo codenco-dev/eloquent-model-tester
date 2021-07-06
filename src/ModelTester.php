@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 
 class ModelTester extends TestCase
@@ -24,7 +25,7 @@ class ModelTester extends TestCase
 
     public function getModel(): ?string
     {
-        throw_if(is_null($this->tested) || ! $this->isModelClass($this->tested),
+        throw_if(is_null($this->tested) || !$this->isModelClass($this->tested),
             new \Exception('You have to use a Eloquent Model'));
 
         return $this->tested;
@@ -32,7 +33,7 @@ class ModelTester extends TestCase
 
     public function getTable(): string
     {
-        throw_if(! $this->isExistingTable($this->table),
+        throw_if(!$this->isExistingTable($this->table),
             new \Exception('You have to use an existing table'));
 
         return $this->getModelTable();
@@ -40,7 +41,7 @@ class ModelTester extends TestCase
 
     public function getModelTable(): string
     {
-        if (! empty($this->table)) {
+        if (!empty($this->table)) {
             return $this->table;
         }
 
@@ -51,7 +52,7 @@ class ModelTester extends TestCase
 
     public function isModelClass(?string $modelClass = null): bool
     {
-        if (! is_null($modelClass)) {
+        if (!is_null($modelClass)) {
             return (new $modelClass) instanceof Model;
         } else {
             return (new $this->tested) instanceof Model;
@@ -60,7 +61,7 @@ class ModelTester extends TestCase
 
     public function isExistingTable(?string $tableName = null): bool
     {
-        if (! is_null($tableName)) {
+        if (!is_null($tableName)) {
             return Schema::hasTable($tableName);
         } else {
             return Schema::hasTable($this->getModelTable());
@@ -70,16 +71,26 @@ class ModelTester extends TestCase
     public function assertHasColumns(array $columns): self
     {
         collect($columns)->each(function ($column) {
-            $this->assertTrue(in_array($column, Schema::getColumnListing($this->getTable())));
+            $this->assertTrue(in_array($column, Schema::getColumnListing($this->getTable())),
+                sprintf(
+                    'Column %s isn\'t a column of table %s.',
+                    $column, $this->getTable()
+                )
+            );
         });
-
         return $this;
     }
 
     public function assertCanFillables(array $columns = []): self
     {
         $modelClass = $this->getModel();
-        $this->assertEquals([], collect($columns)->diff((new $modelClass)->getFillable())->toArray());
+        $notFillable = collect($columns)->diff((new $modelClass)->getFillable());
+        $this->assertEquals([], $notFillable->toArray(),
+            sprintf(
+                'Column %s isn\'t mass fillable.',
+                $notFillable->implode(", ")
+            )
+        );
 
         return $this;
     }
@@ -89,14 +100,22 @@ class ModelTester extends TestCase
         $relation = $relation ?: $this->getHasManyRelationName($related);
 
         $modelInstance = $this->getModel()::factory()->create();
-        $relatedInstance = $modelInstance->{$relation}()->save($related::factory()->make());
-        $modelInstance->refresh();
+        try {
+            $relatedInstance = $modelInstance->{$relation}()->save($related::factory()->make());
+            $modelInstance->refresh();
 
-        $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
-        $this->assertEquals(1, $modelInstance->{$relation}->count());
-        $this->assertInstanceOf(Collection::class, $modelInstance->{$relation});
-        $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
 
+            $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
+            $this->assertEquals(1, $modelInstance->{$relation}->count());
+            $this->assertInstanceOf(Collection::class, $modelInstance->{$relation});
+            $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
+        } catch (\Exception) {
+            $this->assertThat("Has Has Many Relation", self::isTrue(), sprintf(
+                'There is a problem with the HasManyRelation %s',
+                $relation
+            ));
+
+        }
         return $this;
     }
 
@@ -110,13 +129,22 @@ class ModelTester extends TestCase
         $modelInstance = $this->getModel()::factory()->create([$foreignKey => $relatedInstance->id]);
         $relatedInstance2 = $related::factory()->create();
         $modelInstance2 = $this->getModel()::factory()->make();
-        $modelInstance2->{$relation}()->associate($relatedInstance2)->save();
+        try {
 
-        $this->assertEquals($modelInstance->{$relation}->id, $relatedInstance->id);
-        $this->assertInstanceOf($related, $modelInstance->{$relation});
-        $this->assertEquals($modelInstance2->{$foreignKey}, $relatedInstance2->id);
-        $this->assertInstanceOf($related, $modelInstance2->{$relation});
 
+            $modelInstance2->{$relation}()->associate($relatedInstance2)->save();
+
+            $this->assertEquals($modelInstance->{$relation}->id, $relatedInstance->id);
+            $this->assertInstanceOf($related, $modelInstance->{$relation});
+            $this->assertEquals($modelInstance2->{$foreignKey}, $relatedInstance2->id);
+            $this->assertInstanceOf($related, $modelInstance2->{$relation});
+        } catch (\Exception) {
+            $this->assertThat("Has Belongs To Relation", self::isTrue(), sprintf(
+                'There is a problem with the BelongsToRelation %s',
+                $relation
+            ));
+
+        }
         return $this;
     }
 
@@ -126,13 +154,22 @@ class ModelTester extends TestCase
 
         $modelInstance = $this->getModel()::factory()->create();
         $relatedInstance = $related::factory()->create();
-        $modelInstance->{$relation}()->attach($relatedInstance);
+        try {
 
-        $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
-        $this->assertEquals($relatedInstance->id, $modelInstance->{$relation}->first()->id);
-        $this->assertEquals(1, $modelInstance->{$relation}->count());
-        $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
 
+            $modelInstance->{$relation}()->attach($relatedInstance);
+
+            $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
+            $this->assertEquals($relatedInstance->id, $modelInstance->{$relation}->first()->id);
+            $this->assertEquals(1, $modelInstance->{$relation}->count());
+            $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
+        } catch (\Exception) {
+            $this->assertThat("Has Many To Many Relation", self::isTrue(), sprintf(
+                'There is a problem with the ManyToManyRelation %s',
+                $relation
+            ));
+
+        }
         return $this;
     }
 
@@ -141,17 +178,25 @@ class ModelTester extends TestCase
         $relation = $relation ?: $this->getHasManyRelationName($related);
 
         $instance = $this->getModel()::factory()->create();
-        $instance->{$relation}()->save($related::factory()->make());
-        $instance->refresh();
+        try {
 
-        $this->assertInstanceOf($related, $instance->{$relation}->first());
+            $instance->{$relation}()->save($related::factory()->make());
+            $instance->refresh();
 
+            $this->assertInstanceOf($related, $instance->{$relation}->first());
+        } catch (\Exception) {
+            $this->assertThat("Has Has Many Morph Relation", self::isTrue(), sprintf(
+                'There is a problem with the HasManyMorph %s',
+                $relation
+            ));
+
+        }
         return $this;
     }
 
-    public function assertHasBelongsToMorphRelation(string $related, string $name, ?string $type = null, ?string $id = null): self
+    public function assertHasBelongsToMorphRelation(string $related, string $relation, ?string $type = null, ?string $id = null): self
     {
-        [$type, $id] = $this->getMorphs($name, $type, $id);
+        [$type, $id] = $this->getMorphs($relation, $type, $id);
 
         $instance = $related::factory()->create();
         $morph = $this->getModel()::factory()->create([
@@ -160,7 +205,10 @@ class ModelTester extends TestCase
         ]);
         $morph->refresh();
 
-        $this->assertInstanceOf($related, $morph->{$name});
+        $this->assertInstanceOf($related, $morph->{$relation},sprintf(
+            'There is a problem with the HasManyMorph %s',
+            $relation
+        ));
 
         return $this;
     }
@@ -182,6 +230,6 @@ class ModelTester extends TestCase
 
     private function getMorphs(string $name, ?string $type, ?string $id): array
     {
-        return [$type ?: $name.'_type', $id ?: $name.'_id'];
+        return [$type ?: $name . '_type', $id ?: $name . '_id'];
     }
 }

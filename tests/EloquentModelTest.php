@@ -20,7 +20,7 @@ class EloquentModelTest extends TestCase
         $this->modelTestable(FirstModel::class)
             ->assertHasColumns(['id', 'name'])
             ->assertCanFillables(['name'])
-            ->assertHasHasManyRelation(SecondModel::class, 'second_models');
+            ->assertHasHasManyRelation(SecondModel::class);
     }
 
     /**
