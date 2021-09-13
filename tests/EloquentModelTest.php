@@ -18,7 +18,7 @@ class EloquentModelTest extends TestCase
     public function it_have_first_model_model()
     {
         $this->modelTestable(FirstModel::class)
-            ->assertHasColumns('id','name')
+            ->assertHasColumns('id', 'name')
             ->assertCanFillables(['name'])
             ->assertHasHasManyRelation(SecondModel::class);
     }
