@@ -4,6 +4,7 @@ namespace CodencoDev\EloquentModelTester;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Constraint\Constraint;
@@ -68,8 +69,10 @@ class ModelTester extends TestCase
         }
     }
 
-    public function assertHasColumns(array $columns): self
+    public function assertHasColumns(array|string ...$columns): self
     {
+        $columns = $this->getArrayParameters(...$columns);
+//        dd($columns);
         collect($columns)->each(function ($column) {
             $this->assertTrue(in_array($column, Schema::getColumnListing($this->getTable())),
                 sprintf(
@@ -81,8 +84,9 @@ class ModelTester extends TestCase
         return $this;
     }
 
-    public function assertCanFillables(array $columns = []): self
+    public function assertCanFillables(array|string ...$columns): self
     {
+        $columns = $this->getArrayParameters(...$columns);
         $modelClass = $this->getModel();
         $modelObject = new $modelClass;
         $notFillable = collect([]);
@@ -237,5 +241,22 @@ class ModelTester extends TestCase
     private function getMorphs(string $name, ?string $type, ?string $id): array
     {
         return [$type ?: $name . '_type', $id ?: $name . '_id'];
+    }
+
+    /**
+     * @param $groups
+     * @param mixed $columns
+     * @return array
+     */
+    public function getArrayParameters(array|string ...$args): array
+    {
+        $params = null;
+        foreach ($args as $arg) {
+            $params = array_merge(
+                (array)$params,
+                Arr::wrap($arg)
+            );
+        }
+        return $params;
     }
 }
