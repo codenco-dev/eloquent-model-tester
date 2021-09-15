@@ -45,7 +45,7 @@ class EloquentModelTest extends TestCase
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model')
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model', 'first_model_id')
             ->assertHasManyToManyRelation(ThirdModel::class, 'third_models')
-            ->assertHasManyToManyRelation(FourthModel::class, 'fourth_models',['pivot_field' => 'test'])
+            ->assertHasManyToManyRelation(FourthModel::class, 'fourth_models', ['pivot_field' => 'test'])
             ->assertHasHasManyMorphRelation(MorphModel::class, 'morph_models');
     }
 
