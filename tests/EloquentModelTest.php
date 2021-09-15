@@ -4,6 +4,7 @@ namespace CodencoDev\EloquentModelTester\Tests;
 
 use CodencoDev\EloquentModelTester\HasModelTester;
 use CodencoDev\EloquentModelTester\Tests\TestModels\FirstModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\FourthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\SecondModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\ThirdModel;
@@ -44,6 +45,7 @@ class EloquentModelTest extends TestCase
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model')
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model', 'first_model_id')
             ->assertHasManyToManyRelation(ThirdModel::class, 'third_models')
+            ->assertHasManyToManyRelation(FourthModel::class, 'fourth_models',['pivot_field' => 'test'])
             ->assertHasHasManyMorphRelation(MorphModel::class, 'morph_models');
     }
 

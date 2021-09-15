@@ -69,10 +69,14 @@ class ModelTester extends TestCase
         }
     }
 
+    public function assertHasTimestampsColumns()
+    {
+        return $this->assertHasColumns(['created_at', 'updated_at']);
+    }
+
     public function assertHasColumns(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
-//        dd($columns);
         collect($columns)->each(function ($column) {
             $this->assertTrue(in_array($column, Schema::getColumnListing($this->getTable())),
                 sprintf(
@@ -84,15 +88,16 @@ class ModelTester extends TestCase
         return $this;
     }
 
+
     public function assertCanFillables(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
         $modelClass = $this->getModel();
         $modelObject = new $modelClass;
         $notFillable = collect([]);
-        foreach ($columns as $column){
-            if( ! $modelObject->isFillable($column)){
-               $notFillable->push($column);
+        foreach ($columns as $column) {
+            if (!$modelObject->isFillable($column)) {
+                $notFillable->push($column);
             }
         }
         $this->assertEquals([], $notFillable->toArray(),
@@ -119,11 +124,12 @@ class ModelTester extends TestCase
             $this->assertEquals(1, $modelInstance->{$relation}->count());
             $this->assertInstanceOf(Collection::class, $modelInstance->{$relation});
             $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             $this->assertThat("Has Has Many Relation", self::isTrue(), sprintf(
-                'There is a problem with the HasManyRelation %s',
-                $relation
+                'There is a problem with the HasManyRelation %s : %s',
+                $relation, $e->getMessage()
             ));
+
 
         }
         return $this;
@@ -148,17 +154,18 @@ class ModelTester extends TestCase
             $this->assertInstanceOf($related, $modelInstance->{$relation});
             $this->assertEquals($modelInstance2->{$foreignKey}, $relatedInstance2->id);
             $this->assertInstanceOf($related, $modelInstance2->{$relation});
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             $this->assertThat("Has Belongs To Relation", self::isTrue(), sprintf(
-                'There is a problem with the BelongsToRelation %s',
-                $relation
+                'There is a problem with the BelongsToRelation %s : %s',
+                $relation, $e->getMessage()
             ));
+
 
         }
         return $this;
     }
 
-    public function assertHasManyToManyRelation(string $related, ?string $relation = null): self
+    public function assertHasManyToManyRelation(string $related, ?string $relation = null, ?array $pivot_value = null): self
     {
         $relation = $relation ?: $this->getManyToManyRelationName($related);
 
@@ -167,16 +174,16 @@ class ModelTester extends TestCase
         try {
 
 
-            $modelInstance->{$relation}()->attach($relatedInstance);
+            $modelInstance->{$relation}()->attach($relatedInstance,$pivot_value ?? []);
 
             $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
             $this->assertEquals($relatedInstance->id, $modelInstance->{$relation}->first()->id);
             $this->assertEquals(1, $modelInstance->{$relation}->count());
             $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             $this->assertThat("Has Many To Many Relation", self::isTrue(), sprintf(
-                'There is a problem with the ManyToManyRelation %s',
-                $relation
+                'There is a problem with the ManyToManyRelation %s : %s',
+                $relation, $e->getMessage()
             ));
 
         }
@@ -194,10 +201,10 @@ class ModelTester extends TestCase
             $instance->refresh();
 
             $this->assertInstanceOf($related, $instance->{$relation}->first());
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             $this->assertThat("Has Has Many Morph Relation", self::isTrue(), sprintf(
-                'There is a problem with the HasManyMorph %s',
-                $relation
+                'There is a problem with the HasManyMorph %s : %s',
+                $relation, $e->getMessage()
             ));
 
         }
@@ -215,7 +222,7 @@ class ModelTester extends TestCase
         ]);
         $morph->refresh();
 
-        $this->assertInstanceOf($related, $morph->{$relation},sprintf(
+        $this->assertInstanceOf($related, $morph->{$relation}, sprintf(
             'There is a problem with the HasManyMorph %s',
             $relation
         ));

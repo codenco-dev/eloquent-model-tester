@@ -27,6 +27,11 @@ class SecondModel extends Model
         return $this->belongsToMany(ThirdModel::class, 'second_model_third_model', 'second_model_id', 'third_model_id');
     }
 
+    public function fourth_models(): BelongsToMany
+    {
+        return $this->belongsToMany(FourthModel::class, 'fourth_model_second_model', 'second_model_id', 'fourth_model_id')->withPivot(['pivot_field']);
+    }
+
     public function morph_models(): MorphMany
     {
         return $this->morphMany(MorphModel::class, 'morph_modelable');

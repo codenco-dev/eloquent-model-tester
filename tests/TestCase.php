@@ -33,11 +33,24 @@ abstract class TestCase extends Orchestra
             $table->string('name');
         });
 
+        $this->app['db']->connection()->getSchemaBuilder()->create('fourth_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+        });
+
         $this->app['db']->connection()->getSchemaBuilder()->create('second_model_third_model', function (Blueprint $table) {
             $table->integer('second_model_id');
             $table->integer('third_model_id');
             $table->foreign('second_model_id')->references('id')->on('second_models');
             $table->foreign('third_model_id')->references('id')->on('third_models');
+        });
+
+        $this->app['db']->connection()->getSchemaBuilder()->create('fourth_model_second_model', function (Blueprint $table) {
+            $table->integer('second_model_id');
+            $table->integer('fourth_model_id');
+            $table->string('pivot_field');
+            $table->foreign('second_model_id')->references('id')->on('second_models');
+            $table->foreign('fourth_model_id')->references('id')->on('fourth_models');
         });
 
         $this->app['db']->connection()->getSchemaBuilder()->create('morph_models', function (Blueprint $table) {
