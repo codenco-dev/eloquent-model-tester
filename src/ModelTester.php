@@ -110,13 +110,13 @@ class ModelTester extends TestCase
         return $this;
     }
 
-    public function assertHasHasManyRelation(string $related, ?string $relation = null): self
+    public function assertHasHasManyRelation(string $related, ?string $relation = null, ?array $defaultRelatedValue=[]): self
     {
         $relation = $relation ?: $this->getHasManyRelationName($related);
 
         $modelInstance = $this->getModel()::factory()->create();
         try {
-            $relatedInstance = $modelInstance->{$relation}()->save($related::factory()->make());
+            $relatedInstance = $modelInstance->{$relation}()->save($related::factory()->make($defaultRelatedValue));
             $modelInstance->refresh();
 
 
