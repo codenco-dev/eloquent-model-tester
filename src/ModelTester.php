@@ -77,6 +77,11 @@ class ModelTester extends TestCase
         return $this->assertHasColumns(['created_at', 'updated_at']);
     }
 
+    public function assertHasSoftDeleteTimestampColumns()
+    {
+        return $this->assertHasColumns('deleted_at');
+    }
+
     public function assertHasColumns(array | string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
@@ -171,19 +176,23 @@ class ModelTester extends TestCase
         string $related,
         string $through,
         ?string $relation = null,
-        ?string $throughForeignKey = null,
-        ?string $relatedForeignKey = null,
+        ?string $firstKey = null,
+        ?string $secondKey = null,
+        ?string $localKey = null,
+        ?string $secondLocalKey = null,
     ): self {
         $relation = $relation ?: $this->getHasManyRelationName($related);
 
         $modelInstance = $this->getModel()::factory()->create();
         $throughInstance = $through::factory()->create();
-        $throughForeignKey = $throughForeignKey ?: $modelInstance->getForeignKey();
-        $relatedForeignKey = $relatedForeignKey ?: $throughInstance->getForeignKey();
+        $firstKey = $firstKey ?: $modelInstance->getForeignKey();
+        $secondKey = $secondKey ?: $throughInstance->getForeignKey();
+        $localKey = $localKey ?: $modelInstance->getKeyName();
+        $secondLocalKey = $secondLocalKey ?: $throughInstance->getKeyName();
 
         try {
-            $throughInstance = $through::factory()->create([$throughForeignKey => $modelInstance->id]);
-            $relatedInstance = $related::factory()->create([$relatedForeignKey => $throughInstance->id]);
+            $throughInstance = $through::factory()->create([$firstKey => $modelInstance->{$localKey}]);
+            $relatedInstance = $related::factory()->create([$secondKey => $throughInstance->{$secondLocalKey}]);
             $modelInstance->refresh();
 
             $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
