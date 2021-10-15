@@ -174,9 +174,11 @@ If you don't use Laravel naming convention, you may also override the relation a
 
 ```php
     $this->modelTestable(Customer::class)
-            ->assertHasHasManyThroughRelation(Order::class, Location::class, 'sales', 'prefix_customer_id', 'prefix_location_id');
+            ->assertHasHasManyThroughRelation(Order::class, Location::class, 'sales', 'prefix_customer_id', 'prefix_location_id', 'firstPrimaryKey', 'secondPrimaryKey');
 
 ```
+
+_Attention_: as there is no **official** inverse of this relationship, it is not possible to use this assertion in the reverse, i.e., in the `orders` model checking for a `customers` relationship.
 
 ### Many to Many relations
 
