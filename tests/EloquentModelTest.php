@@ -3,6 +3,7 @@
 namespace CodencoDev\EloquentModelTester\Tests;
 
 use CodencoDev\EloquentModelTester\HasModelTester;
+use CodencoDev\EloquentModelTester\Tests\TestModels\FifthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\FirstModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\FourthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
@@ -21,7 +22,8 @@ class EloquentModelTest extends TestCase
         $this->modelTestable(FirstModel::class)
             ->assertHasColumns('id', 'name')
             ->assertCanFillables(['name'])
-            ->assertHasHasManyRelation(SecondModel::class);
+            ->assertHasHasManyRelation(SecondModel::class)
+            ->assertHasHasManyThroughRelation(FifthModel::class, SecondModel::class);
     }
 
     /**
