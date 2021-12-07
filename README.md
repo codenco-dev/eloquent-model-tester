@@ -18,8 +18,8 @@ composer require codenco-dev/eloquent-model-tester --dev
 
 ## Usage
 
-To use this package, you have to generate factories for your models. (See [Factories Documentation](https://laravel.com/docs/6.x/database-testing#writing-factories)) 
-You can generate one test file by model or for several. For your model `MyModel` you can use this command for example: 
+To use this package, you have to generate factories for your models. (See [Factories Documentation](https://laravel.com/docs/6.x/database-testing#writing-factories))
+You can generate one test file by model or for several. For your model `MyModel` you can use this command for example:
 
 ```bash
 php artisan make:model MyModel -mf
@@ -40,13 +40,13 @@ class MyModelTest extends TestCase
 {
     use RefreshDatabase;
     use HasModelTester;
-    
+
     public function test_have_my_model_model()
     {
         //...
     }
 }
-``` 
+```
 
 For more simplicity, you can put the `RefreshDatabase` use statement in `tests/TestCase.php` file
 
@@ -57,16 +57,15 @@ With this structure
     users
         id - integer
         name - string
-        other_field - string 
-   
+        other_field - string
 
 you can test if you have all the fields you need and if they are fillable.
 
-``` php
+```php
 class UserTest extends TestCase
 {
     use HasModelTestor;
-    
+
     public function test_have_user_model()
     {
         $this->modelTestable(User::class)
@@ -79,24 +78,24 @@ class UserTest extends TestCase
 ### HasMany et BelongsTo
 
 You can test relations of your models. For example, with this structure
-    
+
     categories
         id - integer
         name - string
-    
+
     customers
         id - integer
         name - string
         category_id - integer
         type_id - integer
 
-you can use `assertHasHasManyRelations` and `assertHasBelongsToRelations` methods  like this        
+you can use `assertHasHasManyRelations` and `assertHasBelongsToRelations` methods like this
 
-``` php
+```php
 class CategoryTest extends TestCase
-{ 
+{
     use HasModelTestor;
-    
+
     public function test_have_category_model()
     {
         $this->modelTestable(Category::class)
@@ -117,10 +116,10 @@ class CustomerTest extends TestCase
 }
 ```
 
-If you don't use Laravel naming convention, you may also override the relation and local keys (for belongsTo relation) by passing 
+If you don't use Laravel naming convention, you may also override the relation and local keys (for belongsTo relation) by passing
 additional arguments to the `assertHasHasManyRelations` and `assertHasBelongsToRelations` methods
 
-``` php
+```php
     $this->modelTestable(Customer::class)
             ->assertHasBelongsToRelation(Category::class,'category','category_id');
 
@@ -129,15 +128,57 @@ additional arguments to the `assertHasHasManyRelations` and `assertHasBelongsToR
 
 ```
 
-If you have several relations, you can chain methods like this: 
+If you have several relations, you can chain methods like this:
 
-``` php
+```php
 
     $this->modelTestable(Customer::class)
             ->assertHasBelongsToRelation(Category::class)
             ->assertHasBelongsToRelation(OtherModel::class);
-    
+
 ```
+
+### HasManyThrough relations
+
+You can test has many through relations of your models. For example, with this structure
+
+    customers
+        id - integer
+        name - string
+
+    locations
+        id - integer
+        customer_id - integer
+
+    orders
+        id - integer
+        location_id - integer
+
+you can use `assertHasHasManyThroughRelations` method like this
+
+```php
+class CustomersTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_orders_model()
+    {
+        $this->modelTestable(Customer::class)
+            ->assertHasHasManyThroughRelation(Order::class, Location::class);
+    }
+
+}
+```
+
+If you don't use Laravel naming convention, you may also override the relation and foreign keys by passing additional arguments to the `assertHasHasManyThroughRelations` method
+
+```php
+    $this->modelTestable(Customer::class)
+            ->assertHasHasManyThroughRelation(Order::class, Location::class, 'sales', 'prefix_customer_id', 'prefix_location_id', 'firstPrimaryKey', 'secondPrimaryKey');
+
+```
+
+_Attention_: as there is no **official** inverse of this relationship, it is not possible to use this assertion in the reverse, i.e., in the `orders` model checking for a `customers` relationship.
 
 ### Many to Many relations
 
@@ -155,13 +196,11 @@ You can test your ManyToMany relations with the `ManyToManyRelationsTestable` tr
         user_id - integer
         role_id - integer
 
-
-
 ```php
 class UserTest extends TestCase
 {
      use HasModelTestor;
-     
+
     public function test_have_user_model()
     {
         $this->modelTestable(User::class)
@@ -184,42 +223,41 @@ class RoleTest extends TestCase
 }
 ```
 
-You can override the relation argument too : 
+You can override the relation argument too :
+
 ```php
     $this->modelTestable(User::class)
             ->assertHasManyToManyRelation(User::class,'users');
 ```
-  
 
 ### Morph Relations
 
-If you have a Morph Relation, 
+If you have a Morph Relation,
 
     posts
         id - integer
         title - string
         body - text
-    
+
     videos
         id - integer
         title - string
         url - string
-    
+
     comments
         id - integer
         body - text
         commentable_id - integer
         commentable_type - string
 
-
 you can use `assertHasBelongsToMorphRelations` and `assertHasHasManyMorphRelations` methods like this
 
 ```php
 class PostTest extends TestCase
 {
-    
+
     use HasModelTestor;
-                
+
     public function test_have_post_model()
         {
             $this->modelTestable(Post::class)
@@ -230,7 +268,7 @@ class PostTest extends TestCase
 class VideoTest extends TestCase
 {
     use HasModelTestor;
-    
+
     public function test_have_video_model()
         {
             $this->modelTestable(Video::class)
@@ -240,9 +278,9 @@ class VideoTest extends TestCase
 
 class CommentTest extends TestCase
 {
-    
+
     use HasModelTestor;
-    
+
     public function test_have_morph_model_model()
     {
         $this->modelTestable(Comment::class)
@@ -254,7 +292,7 @@ class CommentTest extends TestCase
 
 ### Pivot and table without Model
 
-You can test if a table contains columns with the `tableTestable` method 
+You can test if a table contains columns with the `tableTestable` method
 
 ```php
 class MyPivotTest extends TestCase
@@ -269,7 +307,7 @@ class MyPivotTest extends TestCase
 
 ### Testing
 
-``` bash
+```bash
 composer test
 ```
 

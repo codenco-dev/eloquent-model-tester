@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class SecondModel extends Model
@@ -30,6 +31,11 @@ class SecondModel extends Model
     public function fourth_models(): BelongsToMany
     {
         return $this->belongsToMany(FourthModel::class, 'fourth_model_second_model', 'second_model_id', 'fourth_model_id')->withPivot(['pivot_field']);
+    }
+
+    public function fifth_models(): HasMany
+    {
+        return $this->hasMany(FifthModel::class, 'second_model_id', 'id');
     }
 
     public function morph_models(): MorphMany
