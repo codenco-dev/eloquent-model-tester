@@ -82,7 +82,7 @@ class ModelTester extends TestCase
         return $this->assertHasColumns('deleted_at');
     }
 
-    public function assertHasColumns(array | string ...$columns): self
+    public function assertHasColumns(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
         collect($columns)->each(function ($column) {
@@ -99,7 +99,7 @@ class ModelTester extends TestCase
         return $this;
     }
 
-    public function assertCanFillables(array | string ...$columns): self
+    public function assertCanFillables(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
         $modelClass = $this->getModel();
@@ -327,15 +327,15 @@ class ModelTester extends TestCase
 
     /**
      * @param $groups
-     * @param mixed $columns
+     * @param  mixed  $columns
      * @return array
      */
-    public function getArrayParameters(array | string ...$args): array
+    public function getArrayParameters(array|string ...$args): array
     {
         $params = null;
         foreach ($args as $arg) {
             $params = array_merge(
-                (array)$params,
+                (array) $params,
                 Arr::wrap($arg)
             );
         }
