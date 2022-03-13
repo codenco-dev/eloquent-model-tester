@@ -91,4 +91,16 @@ class EloquentModelTest extends TestCase
         $this->tableTestable('second_model_third_model')
             ->assertHasColumns(['second_model_id', 'third_model_id']);
     }
+
+    /**
+     * @test
+     */
+    public function it_have_scope_in_first_model()
+    {
+        $this->modelTestable(FirstModel::class)
+            ->assertHasScope('theScope1')
+            ->assertHasScope('theScope2','param1')
+            ->assertHasScope('theScope3')
+            ->assertHasScope('theScope4','param1','param2');
+    }
 }

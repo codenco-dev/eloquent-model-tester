@@ -2,6 +2,7 @@
 
 namespace CodencoDev\EloquentModelTester;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -319,6 +320,12 @@ class ModelTester extends TestCase
             $relation
         ));
 
+        return $this;
+    }
+
+    public function assertHasScope(string $scopeName,...$args): self
+    {
+        $this->assertInstanceOf(Builder::class, $this->getModel()::$scopeName(...$args));
         return $this;
     }
 
