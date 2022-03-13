@@ -28,7 +28,7 @@ class ModelTester extends TestCase
     public function getModel(): ?string
     {
         throw_if(
-            is_null($this->tested) || !$this->isModelClass($this->tested),
+            is_null($this->tested) || ! $this->isModelClass($this->tested),
             new \Exception('You have to use a Eloquent Model')
         );
 
@@ -38,7 +38,7 @@ class ModelTester extends TestCase
     public function getTable(): string
     {
         throw_if(
-            !$this->isExistingTable($this->table),
+            ! $this->isExistingTable($this->table),
             new \Exception('You have to use an existing table')
         );
 
@@ -47,7 +47,7 @@ class ModelTester extends TestCase
 
     public function getModelTable(): string
     {
-        if (!empty($this->table)) {
+        if (! empty($this->table)) {
             return $this->table;
         }
 
@@ -58,7 +58,7 @@ class ModelTester extends TestCase
 
     public function isModelClass(?string $modelClass = null): bool
     {
-        if (!is_null($modelClass)) {
+        if (! is_null($modelClass)) {
             return (new $modelClass) instanceof Model;
         } else {
             return (new $this->tested) instanceof Model;
@@ -67,7 +67,7 @@ class ModelTester extends TestCase
 
     public function isExistingTable(?string $tableName = null): bool
     {
-        if (!is_null($tableName)) {
+        if (! is_null($tableName)) {
             return Schema::hasTable($tableName);
         } else {
             return Schema::hasTable($this->getModelTable());
@@ -108,7 +108,7 @@ class ModelTester extends TestCase
         $modelObject = new $modelClass;
         $notFillable = collect([]);
         foreach ($columns as $column) {
-            if (!$modelObject->isFillable($column)) {
+            if (! $modelObject->isFillable($column)) {
                 $notFillable->push($column);
             }
         }
@@ -162,8 +162,10 @@ class ModelTester extends TestCase
                 }
                 if (is_array($item)) {
                     [$factory, $attributes] = $item;
+
                     return ($factory->newModel())::factory()->create($attributes)->id;
                 }
+
                 return $item;
             })->toArray()));
             $modelInstance->refresh();
@@ -184,15 +186,14 @@ class ModelTester extends TestCase
     }
 
     public function assertHasHasManyThroughRelation(
-        string  $related,
-        string  $through,
+        string $related,
+        string $through,
         ?string $relation = null,
         ?string $firstKey = null,
         ?string $secondKey = null,
         ?string $localKey = null,
         ?string $secondLocalKey = null,
-    ): self
-    {
+    ): self {
         $relation = $relation ?: $this->getHasManyRelationName($related);
 
         $modelInstance = $this->getModel()::factory()->create();
@@ -259,11 +260,11 @@ class ModelTester extends TestCase
         $relatedInstance = $related::factory()->create();
 
         try {
-
             $modelInstance->{$relation}()->attach($relatedInstance, collect($pivot_value ?? [])->map(function ($item) {
                 if ($item instanceof Factory) {
                     return ($item->newModel())::factory()->create()->id;
                 }
+
                 return $item;
             })->toArray());
 
@@ -351,7 +352,7 @@ class ModelTester extends TestCase
 
     /**
      * @param $groups
-     * @param mixed $columns
+     * @param  mixed  $columns
      * @return array
      */
     public function getArrayParameters(array|string ...$args): array
@@ -359,7 +360,7 @@ class ModelTester extends TestCase
         $params = null;
         foreach ($args as $arg) {
             $params = array_merge(
-                (array)$params,
+                (array) $params,
                 Arr::wrap($arg)
             );
         }
@@ -369,6 +370,6 @@ class ModelTester extends TestCase
 
     private function getMorphs(string $name, ?string $type, ?string $id): array
     {
-        return [$type ?: $name . '_type', $id ?: $name . '_id'];
+        return [$type ?: $name.'_type', $id ?: $name.'_id'];
     }
 }
