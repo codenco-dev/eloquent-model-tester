@@ -324,9 +324,10 @@ class ModelTester extends TestCase
         return $this;
     }
 
-    public function assertHasScope(string $scopeName,...$args): self
+    public function assertHasScope(string $scopeName, ...$args): self
     {
         $this->assertInstanceOf(Builder::class, $this->getModel()::$scopeName(...$args));
+
         return $this;
     }
 

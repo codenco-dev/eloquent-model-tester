@@ -37,22 +37,18 @@ class FirstModel extends Model
         return $query->whereRaw('1=1');
     }
 
-    public function scopeTheScope2(Builder $query,$param1): Builder
+    public function scopeTheScope2(Builder $query, $param1): Builder
     {
         return $query->whereRaw('1=1');
     }
 
-    public function scopeTheScope3(Builder $query,$param1=""): Builder
+    public function scopeTheScope3(Builder $query, $param1 = ''): Builder
     {
         return $query->whereRaw('1=1');
     }
 
-    public function scopeTheScope4(Builder $query,$param1,$param2): Builder
+    public function scopeTheScope4(Builder $query, $param1, $param2): Builder
     {
         return $query->whereRaw('1=1');
     }
-
-
-
-
 }

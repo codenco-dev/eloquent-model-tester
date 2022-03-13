@@ -99,8 +99,8 @@ class EloquentModelTest extends TestCase
     {
         $this->modelTestable(FirstModel::class)
             ->assertHasScope('theScope1')
-            ->assertHasScope('theScope2','param1')
+            ->assertHasScope('theScope2', 'param1')
             ->assertHasScope('theScope3')
-            ->assertHasScope('theScope4','param1','param2');
+            ->assertHasScope('theScope4', 'param1', 'param2');
     }
 }
