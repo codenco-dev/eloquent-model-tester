@@ -150,6 +150,30 @@ class ModelTester extends TestCase
         return $this;
     }
 
+    public function assertHasMorphOneRelation(string $related, string $relation, ?array $defaultRelatedValue= []): self
+    {
+        $modelInstance = $this->getModel()::factory()->create();
+
+        try {
+            $relatedInstance = $modelInstance->{$relation}()->save($related::factory()->make($defaultRelatedValue));
+            $modelInstance->refresh();
+            $relatedInstance->refresh();
+
+            $this->assertTrue($relatedInstance->is($modelInstance->{$relation}));
+            $this->assertEquals($relatedInstance->getAttributes(), $modelInstance->{$relation}->getAttributes());
+            $this->assertEquals(1, $modelInstance->{$relation}()->count());
+            $this->assertInstanceOf($related, $modelInstance->{$relation});
+        } catch (\Exception $e) {
+            $this->assertThat('Has Morph One Relation', self::isTrue(), sprintf(
+                'There is a problem with the MorphOneRelation %s : %s',
+                $relation,
+                $e->getMessage()
+            ));
+        }
+
+        return $this;
+    }
+
     public function assertHasHasManyRelation(string $related, ?string $relation = null, ?array $defaultRelatedValue = []): self
     {
         $relation = $relation ?: $this->getHasManyRelationName($related);
