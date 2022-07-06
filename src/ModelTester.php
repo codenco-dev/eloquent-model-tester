@@ -133,11 +133,12 @@ class ModelTester extends TestCase
         try {
             $relatedInstance = $modelInstance->{$relation}()->save($related::factory()->make($defaultRelatedValue));
             $modelInstance->refresh();
+            $relatedInstance->refresh();
 
-            $this->assertTrue($modelInstance->{$relation}->contains($relatedInstance));
-            $this->assertEquals(1, $modelInstance->{$relation}->count());
-            $this->assertInstanceOf(Collection::class, $modelInstance->{$relation});
-            $this->assertInstanceOf($related, $modelInstance->{$relation}->first());
+            $this->assertTrue($relatedInstance->is($modelInstance->{$relation}));
+            $this->assertEquals($relatedInstance->getAttributes(), $modelInstance->{$relation}->getAttributes());
+            $this->assertEquals(1, $modelInstance->{$relation}()->count());
+            $this->assertInstanceOf($related, $modelInstance->{$relation});
         } catch (\Exception $e) {
             $this->assertThat('Has Has One Relation', self::isTrue(), sprintf(
                 'There is a problem with the HasOneRelation %s : %s',
