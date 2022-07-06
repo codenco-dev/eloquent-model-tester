@@ -150,7 +150,7 @@ class ModelTester extends TestCase
         return $this;
     }
 
-    public function assertHasMorphOneRelation(string $related, string $relation, ?array $defaultRelatedValue= []): self
+    public function assertHasMorphOneRelation(string $related, string $relation, ?array $defaultRelatedValue = []): self
     {
         $modelInstance = $this->getModel()::factory()->create();
 
