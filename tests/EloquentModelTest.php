@@ -8,6 +8,7 @@ use CodencoDev\EloquentModelTester\Tests\TestModels\FirstModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\FourthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\SecondModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\SixthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\ThirdModel;
 
 class EloquentModelTest extends TestCase
@@ -23,7 +24,8 @@ class EloquentModelTest extends TestCase
             ->assertHasColumns('id', 'name')
             ->assertCanFillables(['name'])
             ->assertHasHasManyRelation(SecondModel::class)
-            ->assertHasHasManyThroughRelation(FifthModel::class, SecondModel::class);
+            ->assertHasHasManyThroughRelation(FifthModel::class, SecondModel::class)
+            ->assertHasHasOneRelation(SixthModel::class);
     }
 
     /**
@@ -80,7 +82,22 @@ class EloquentModelTest extends TestCase
         $this->modelTestable(MorphModel::class)
             ->assertHasColumns(['id', 'name', 'morph_modelable_type', 'morph_modelable_id'])
             ->assertCanFillables(['name', 'morph_modelable_type', 'morph_modelable_id'])
-            ->assertHasBelongsToMorphRelation(SecondModel::class, 'morph_modelable');
+            ->assertHasBelongsToMorphRelation(SecondModel::class, 'morph_modelable')
+            ->assertHasBelongsToMorphRelation(SixthModel::class, 'morph_modelable');
+    }
+
+    /**
+     * @test
+     */
+    public function it_have_sixth_model_model()
+    {
+        $column = ['id', 'name', 'first_model_id'];
+        $this->modelTestable(SixthModel::class)
+            ->assertHasColumns($column)
+            ->assertCanFillables($column)
+            ->assertHasBelongsToRelation(FirstModel::class, 'first_model')
+            ->assertHasBelongsToRelation(FirstModel::class, 'first_model', 'first_model_id')
+            ->assertHasMorphOneRelation(MorphModel::class, 'morphed');
     }
 
     /**
