@@ -2,22 +2,24 @@
 
 namespace CodencoDev\EloquentModelTester\Tests\TestModels;
 
-use Database\Factories\FifthModelFactory;
+use Database\Factories\SixthModelFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class FifthModel extends Model
+class SixthModel extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    protected $fillable = ['id', 'name', 'second_model_id'];
+    protected $fillable = ['id', 'name', 'isAdmin'];
 
     protected $guarded = ['isAdmin'];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected static function newFactory()
     {
-        return FifthModelFactory::new();
+        return SixthModelFactory::new();
     }
 }

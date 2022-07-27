@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use CodencoDev\EloquentModelTester\Tests\TestModels\FifthModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\SixthModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class FifthModelFactory extends Factory
+class SixthModelFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = FifthModel::class;
+    protected $model = SixthModel::class;
 
     /**
      * Define the model's default state.
@@ -23,7 +23,6 @@ class FifthModelFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'second_model_id' => null,
             'isAdmin' => $this->faker->boolean,
         ];
     }

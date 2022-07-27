@@ -8,7 +8,9 @@ use CodencoDev\EloquentModelTester\Tests\TestModels\FirstModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\FourthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\SecondModel;
+use CodencoDev\EloquentModelTester\Tests\TestModels\SixthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\ThirdModel;
+use PHPUnit\Framework\ExpectationFailedException;
 
 class EloquentModelTest extends TestCase
 {
@@ -21,7 +23,11 @@ class EloquentModelTest extends TestCase
     {
         $this->modelTestable(FirstModel::class)
             ->assertHasColumns('id', 'name')
+            ->assertHasOnlyColumns('id', 'name')
             ->assertCanFillables(['name'])
+            ->assertHasOnlyColumnsInFillable(['id', 'name'])
+            ->assertHasNoGuardedAndFillableFields()
+            ->assertCanOnlyFill(['id','name'])
             ->assertHasHasManyRelation(SecondModel::class)
             ->assertHasHasManyThroughRelation(FifthModel::class, SecondModel::class);
     }
@@ -70,6 +76,99 @@ class EloquentModelTest extends TestCase
             ->assertHasColumns(['id', 'name'])
             ->assertCanFillables(['name'])
             ->assertHasManyToManyRelation(SecondModel::class, 'second_models');
+    }
+
+    /**
+     * @test
+     */
+    public function it_have_fifth_model_model()
+    {
+        $this->modelTestable(FifthModel::class)
+            ->assertHasColumns(['id', 'name'])
+            ->assertCanFillables(['name'])
+            ->assertHasColumnsInGuarded('isAdmin')
+            ->assertHasOnlyColumnsInGuarded('isAdmin');
+    }
+
+    /**
+     * @test
+     */
+    public function it_tests_for_the_timestamps()
+    {
+        $this->modelTestable(SixthModel::class)
+            ->assertHasColumns(['id', 'name'])
+            ->assertHasTimestampsColumns()
+            ->assertHasSoftDeleteTimestampColumns();
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_fillable_field_is_not_exactly_as_expected()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertCanOnlyFill(['id', 'name','second_model_id', 'isAdmin']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_table_columns_is_not_exactly_as_expected()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasOnlyColumns(['id', 'name','second_model_id', 'isAdmin', 'missing']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_field_is_not_exactly_as_expected()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasOnlyColumnsInGuarded(['id', 'isAdmin']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_field_does_not_include_the_expected_value()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasColumnsInGuarded(['id']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_fillable_field_does_not_include_the_expected_value()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasColumnsInFillable(['isAdmin']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_and_fillable_arrays_contain_the_same_value()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasNoGuardedAndFillableFields();
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_and_fillable_arrays_contain_the_same_value_when_asserting_only_fillable()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertCanOnlyFill('id','name','isAdmin');
     }
 
     /**
