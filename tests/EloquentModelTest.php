@@ -86,6 +86,7 @@ class EloquentModelTest extends TestCase
         $this->modelTestable(FifthModel::class)
             ->assertHasColumns(['id', 'name'])
             ->assertCanFillables(['name'])
+            ->assertCanOnlyFill('name', 'id', 'second_model_id')
             ->assertHasColumnsInGuarded('isAdmin')
             ->assertHasOnlyColumnsInGuarded('isAdmin');
     }
