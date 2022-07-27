@@ -363,6 +363,29 @@ class MyPivotTest extends TestCase
 }
 ```
 
+### Available Assertions
+| Assertion                               | Description                                                                         | Notes                                                  |
+|-----------------------------------------|-------------------------------------------------------------------------------------|--------------------------------------------------------|
+| `assertHasTimestampsColumns()`          | checks if the `created_at` and `updated_at` columns are present in the table.       ||
+| `assertHasSoftDeleteTimestampColumns()` | checks if the `deleted_at` column is present in the table.                          ||
+| `assertHasColumns()`                    | checks for the presence of the provided column names appear in the table.           ||
+| `assertHasOnlyColumns()`                | checks that only the column names provided are the only columns of the table.       |
+| `assertCanOnlyFill()`                   | checks that only the fields provided can be filled and no others.                   |
+| `assertCanFillables()`                  | checks if the fields provided can be filled.                                        | *Deprecated* - Alias of `assertHasColumnsInFillable()` |
+| `assertHasColumnsInFillable()`          | checks if the fields provided can be filled.                                        ||
+| `assertHasOnlyColumnsInFillable()`      | checks if only the fields provided are those that appear in the $fillable array.    ||
+| `assertHasColumnsInGuarded()`           | checks if the fields provide are guarded.                                           ||
+| `assertHasOnlyColumnsInGuarded()`       | checks if the only the fields provided are those that appear in the $guarded array. ||
+| `assertHasNoGuardedAndFillableFields()` | checks that a column does not appear in both the $fillable and $guarded arrays.     ||
+| `assertHasHasOnRelation()`              | checks that the model has the `HasOne` relation.                                    ||
+| `assertHasHasManyRelation()`            | checks that the model hsa the `HasMany` relation.                                   ||
+| `assertHasHasManyThroughRelation()`     | checks that the model has the `HasManyThrough` relation.                            ||
+| `assertHasBelongsToRelation()`          | checks that the model has the `BelongsTo` relation.                                 ||
+| `assertHasManyToManyRelation()`         | checks that the model has the `ManyToMany` relation.                                ||
+| `assertHasHasManyMorphRelation()`       | checks that the model has the `HasManyMorph` relation.                              ||
+| `assertHasBelongsToMorphRelation()`     | checks that the model has the `BelongsToMorph` relation.                            ||
+| `assertHasScope()`                      | checks that the model has the scope.                                                ||
+
 ### Testing
 
 ```bash
