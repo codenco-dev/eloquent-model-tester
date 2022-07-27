@@ -108,7 +108,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(FifthModel::class)
-            ->assertCanOnlyFill(['id', 'name','second_model_id', 'isAdmin']);
+            ->assertCanOnlyFill(['id', 'name', 'second_model_id', 'isAdmin']);
     }
 
     /**
@@ -118,7 +118,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(FifthModel::class)
-            ->assertHasOnlyColumns(['id', 'name','second_model_id', 'isAdmin', 'missing']);
+            ->assertHasOnlyColumns(['id', 'name', 'second_model_id', 'isAdmin', 'missing']);
     }
 
     /**
@@ -168,7 +168,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(SixthModel::class)
-            ->assertCanOnlyFill('id','name','isAdmin');
+            ->assertCanOnlyFill('id', 'name', 'isAdmin');
     }
 
     /**

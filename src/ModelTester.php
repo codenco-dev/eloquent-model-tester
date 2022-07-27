@@ -154,7 +154,7 @@ class ModelTester extends TestCase
         return $this;
     }
 
-    public function assertHasOnlyColumnsInFillable(array|string ...$columns):self
+    public function assertHasOnlyColumnsInFillable(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
         $modelClass = $this->getModel();
@@ -188,7 +188,7 @@ class ModelTester extends TestCase
         return $this;
     }
 
-    public function assertHasOnlyColumnsInGuarded(array|string ...$columns):self
+    public function assertHasOnlyColumnsInGuarded(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
         $modelClass = $this->getModel();
