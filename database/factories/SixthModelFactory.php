@@ -22,8 +22,9 @@ class SixthModelFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word(),
+            'name' => $this->faker->word,
             'first_model_id' => null,
+            'isAdmin' => $this->faker->boolean,
         ];
     }
 }

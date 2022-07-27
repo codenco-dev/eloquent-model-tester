@@ -12,6 +12,8 @@ class FifthModel extends Model
 
     protected $fillable = ['id', 'name', 'second_model_id'];
 
+    protected $guarded = ['isAdmin'];
+
     public $timestamps = false;
 
     protected static function newFactory()
