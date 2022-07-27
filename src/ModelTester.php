@@ -122,6 +122,7 @@ class ModelTester extends TestCase
 
         $this->assertHasNoGuardedAndFillableFields();
         $this->assertEqualsCanonicalizing($columns, $diff, 'The expected fillable fields differ from those defined in $fillable and $guarded.');
+        $this->assertCanFillables($diff);
 
         return $this;
     }
