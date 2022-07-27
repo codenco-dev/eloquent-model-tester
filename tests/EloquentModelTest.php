@@ -27,7 +27,7 @@ class EloquentModelTest extends TestCase
             ->assertCanFillables(['name'])
             ->assertHasOnlyColumnsInFillable(['id', 'name'])
             ->assertHasNoGuardedAndFillableFields()
-            ->assertCanOnlyFill(['id','name'])
+            ->assertCanOnlyFill(['id', 'name'])
             ->assertHasHasManyRelation(SecondModel::class)
             ->assertHasHasManyThroughRelation(FifthModel::class, SecondModel::class);
     }
