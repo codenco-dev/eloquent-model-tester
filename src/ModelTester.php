@@ -206,7 +206,7 @@ class ModelTester extends TestCase
         $fillable = $modelObject->getFillable();
         $guarded = $modelObject->getGuarded();
 
-        $intersect = array_intersect($fillable, $guarded);
+        $intersect = collect(array_intersect($fillable, $guarded));
 
         $this->assertEquals(
             [],
