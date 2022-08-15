@@ -88,8 +88,8 @@ class EloquentModelTest extends TestCase
             ->assertHasColumns(['id', 'name'])
             ->assertCanFillables(['name'])
             ->assertCanOnlyFill('name', 'id', 'second_model_id')
-            ->assertHasColumnsInGuarded('isAdmin')
-            ->assertHasOnlyColumnsInGuarded('isAdmin');
+            ->assertHasColumnsInGuarded('is_admin')
+            ->assertHasOnlyColumnsInGuarded('is_admin');
     }
 
     /**
@@ -110,7 +110,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(FifthModel::class)
-            ->assertCanOnlyFill(['id', 'name', 'second_model_id', 'isAdmin']);
+            ->assertCanOnlyFill(['id', 'name', 'second_model_id', 'is_admin']);
     }
 
     /**
@@ -120,7 +120,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(FifthModel::class)
-            ->assertHasOnlyColumns(['id', 'name', 'second_model_id', 'isAdmin', 'missing']);
+            ->assertHasOnlyColumns(['id', 'name', 'second_model_id', 'is_admin', 'missing']);
     }
 
     /**
@@ -130,7 +130,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(FifthModel::class)
-            ->assertHasOnlyColumnsInGuarded(['id', 'isAdmin']);
+            ->assertHasOnlyColumnsInGuarded(['id', 'is_admin']);
     }
 
     /**
@@ -150,7 +150,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(FifthModel::class)
-            ->assertHasColumnsInFillable(['isAdmin']);
+            ->assertHasColumnsInFillable(['is_admin']);
     }
 
     /**
@@ -170,7 +170,7 @@ class EloquentModelTest extends TestCase
     {
         $this->expectException(ExpectationFailedException::class);
         $this->modelTestable(SixthModel::class)
-            ->assertCanOnlyFill('id', 'name', 'isAdmin');
+            ->assertCanOnlyFill('id', 'name', 'is_admin');
     }
 
     /**

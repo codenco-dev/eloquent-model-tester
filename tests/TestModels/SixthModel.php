@@ -14,9 +14,9 @@ class SixthModel extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['id', 'name', 'isAdmin'];
+    protected $fillable = ['id', 'name', 'first_model_id', 'is_admin'];
 
-    protected $guarded = ['isAdmin'];
+    protected $guarded = ['is_admin'];
 
     public $timestamps = true;
 

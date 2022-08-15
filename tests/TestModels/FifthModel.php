@@ -12,7 +12,7 @@ class FifthModel extends Model
 
     protected $fillable = ['id', 'name', 'second_model_id'];
 
-    protected $guarded = ['isAdmin'];
+    protected $guarded = ['is_admin'];
 
     public $timestamps = false;
 

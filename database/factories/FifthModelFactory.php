@@ -24,7 +24,7 @@ class FifthModelFactory extends Factory
         return [
             'name' => $this->faker->word,
             'second_model_id' => null,
-            'isAdmin' => $this->faker->boolean,
+            'is_admin' => $this->faker->boolean,
         ];
     }
 }
