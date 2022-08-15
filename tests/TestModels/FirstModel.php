@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class FirstModel extends Model
 {
@@ -25,6 +26,11 @@ class FirstModel extends Model
     public function fifth_models(): HasManyThrough
     {
         return $this->hasManyThrough(FifthModel::class, SecondModel::class, 'first_model_id', 'second_model_id');
+    }
+
+    public function sixth_model(): HasOne
+    {
+        return $this->hasOne(SixthModel::class, 'first_model_id', 'id');
     }
 
     protected static function newFactory()

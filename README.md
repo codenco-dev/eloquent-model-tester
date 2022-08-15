@@ -290,6 +290,64 @@ class CommentTest extends TestCase
 }
 ```
 
+#### MorphOne Relations
+If you have a Morph One Relation,
+
+    posts
+        id - integer
+        title - string
+        body - text
+
+    users
+        id - integer
+        title - string
+
+    images
+        id - integer
+        url - string
+        imageable_id - integer
+        imageable_type - string
+
+you can use `assertHasBelongsToMorphRelations` and `assertHasMorphOneRelations` methods like this
+
+```php
+class PostTest extends TestCase
+{
+
+    use HasModelTestor;
+
+    public function test_have_post_model()
+        {
+            $this->modelTestable(Post::class)
+                ->assertHasMorphOneRelation(Image::class);
+        }
+}
+
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+        {
+            $this->modelTestable(User::class)
+                ->assertHasMorphOneRelation(Image::class, 'avatar');
+        }
+}
+
+class ImageTest extends TestCase
+{
+
+    use HasModelTestor;
+
+    public function test_have_image_model()
+    {
+        $this->modelTestable(Image::class)
+           ->assertHasBelongsToMorphRelation(Post::class,'imageable')
+           ->assertHasBelongsToMorphRelation(User::class,'imageable');
+    }
+}
+```
+
 ### Pivot and table without Model
 
 You can test if a table contains columns with the `tableTestable` method
