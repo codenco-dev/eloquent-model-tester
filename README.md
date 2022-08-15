@@ -319,7 +319,7 @@ class PostTest extends TestCase
     public function test_have_post_model()
         {
             $this->modelTestable(Post::class)
-                ->assertHasMorphOneRelation(Image::class,'images');
+                ->assertHasMorphOneRelation(Image::class);
         }
 }
 
@@ -327,10 +327,10 @@ class UserTest extends TestCase
 {
     use HasModelTestor;
 
-    public function test_have_video_model()
+    public function test_have_user_model()
         {
             $this->modelTestable(User::class)
-                ->assertHasMorphOneRelation(Image::class,'images');
+                ->assertHasMorphOneRelation(Image::class, 'avatar');
         }
 }
 
@@ -339,7 +339,7 @@ class ImageTest extends TestCase
 
     use HasModelTestor;
 
-    public function test_have_morph_model_model()
+    public function test_have_image_model()
     {
         $this->modelTestable(Image::class)
            ->assertHasBelongsToMorphRelation(Post::class,'imageable')
