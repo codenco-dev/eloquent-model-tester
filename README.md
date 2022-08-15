@@ -59,7 +59,7 @@ With this structure
         name - string
         other_field - string
 
-you can test if you have all the fields you need and if they are fillable.
+you can test if you have all the fields you need and if they are fillable or guarded.
 
 ```php
 class UserTest extends TestCase
@@ -70,7 +70,25 @@ class UserTest extends TestCase
     {
         $this->modelTestable(User::class)
             ->assertHasColumns(['id','name','email','password','remember_token'])
-            ->assertCanFillables(['name','password']);
+            ->assertHasColumnsInFillable(['name','password'])
+            ->assertHasColumnsInGuarded(['remember_token']);
+    }
+}
+```
+
+The functions `assertHasColumnsInFillable()` and `assertHasColumnsInGuarded()` only check if the `$fillable` and `$guarded` arrays contain the values passed. If you want to ensure that no other entries are in the `$fillable` and `$guarded` arrays, then you can use the  stricter `assertHasOnlyColumnsInFillable()` and `assetHasOnlyColumnsInGuarded()` functions as follows:
+
+```php
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasColumns(['id','name','email','password','remember_token'])
+            ->assertHasOnlyColumnsInFillable(['name','password'])
+            ->assertHasOnlyColumnsInGuarded(['remember_token']);
     }
 }
 ```
@@ -378,6 +396,7 @@ class MyPivotTest extends TestCase
 | `assertHasOnlyColumnsInGuarded()`       | checks if the only the fields provided are those that appear in the $guarded array. ||
 | `assertHasNoGuardedAndFillableFields()` | checks that a column does not appear in both the $fillable and $guarded arrays.     ||
 | `assertHasHasOnRelation()`              | checks that the model has the `HasOne` relation.                                    ||
+| `assertHasMorphOneRelation()`           | checks that the model has the `MorphOne` relation.                                  ||
 | `assertHasHasManyRelation()`            | checks that the model hsa the `HasMany` relation.                                   ||
 | `assertHasHasManyThroughRelation()`     | checks that the model has the `HasManyThrough` relation.                            ||
 | `assertHasBelongsToRelation()`          | checks that the model has the `BelongsTo` relation.                                 ||
