@@ -127,6 +127,9 @@ class ModelTester extends TestCase
         return $this;
     }
 
+    /**
+     * @deprecated
+     */
     public function assertCanFillables(array|string ...$columns): self
     {
         return $this->assertHasColumnsInFillable(...$columns);
