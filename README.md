@@ -60,7 +60,7 @@ With this structure
         name - string
         email - string
         password - string
-        remeber_token - string
+        remember_token - string
         other_field - string
         created_at - timestamp
         updated_at - timestamp
@@ -622,11 +622,11 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### Security
 
-If you discover any security related issues, please email dthomas@codenco.io instead of using the issue tracker.
+If you discover any security related issues, please email dthomas@codenco.fr or contact me on Twitter [DomThomasEs](https://twitter.com/DomThomasEs) instead of using the issue tracker.
 
 ## Credits
 
-- [Dominic THOMAS](https://github.com/thomasdominic)
+- [Dominique THOMAS](https://github.com/thomasdominic)
 - [All Contributors](../../contributors)
 
 ## License
