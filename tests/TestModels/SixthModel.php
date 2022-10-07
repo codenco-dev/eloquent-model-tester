@@ -7,14 +7,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SixthModel extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    public $timestamps = false;
+    protected $fillable = ['id', 'name', 'first_model_id', 'is_admin'];
 
-    protected $fillable = ['id', 'name', 'first_model_id'];
+    protected $guarded = ['is_admin'];
+
+    public $timestamps = true;
+
+    protected static function newFactory()
+    {
+        return SixthModelFactory::new();
+    }
 
     public function first_model(): BelongsTo
     {
@@ -24,10 +33,5 @@ class SixthModel extends Model
     public function morphed(): MorphOne
     {
         return $this->morphOne(MorphModel::class, 'morph_modelable');
-    }
-
-    protected static function newFactory()
-    {
-        return SixthModelFactory::new();
     }
 }

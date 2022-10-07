@@ -10,6 +10,7 @@ use CodencoDev\EloquentModelTester\Tests\TestModels\MorphModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\SecondModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\SixthModel;
 use CodencoDev\EloquentModelTester\Tests\TestModels\ThirdModel;
+use PHPUnit\Framework\ExpectationFailedException;
 
 class EloquentModelTest extends TestCase
 {
@@ -22,7 +23,11 @@ class EloquentModelTest extends TestCase
     {
         $this->modelTestable(FirstModel::class)
             ->assertHasColumns('id', 'name')
-            ->assertCanFillables(['name'])
+            ->assertHasOnlyColumns('id', 'name')
+            ->assertHasColumnsInFillable(['name'])
+            ->assertHasOnlyColumnsInFillable(['id', 'name'])
+            ->assertHasNoGuardedAndFillableFields()
+            ->assertCanOnlyFill(['id', 'name'])
             ->assertHasHasManyRelation(SecondModel::class)
             ->assertHasHasManyThroughRelation(FifthModel::class, SecondModel::class)
             ->assertHasHasOneRelation(SixthModel::class);
@@ -45,7 +50,7 @@ class EloquentModelTest extends TestCase
         $column = ['id', 'name', 'first_model_id'];
         $this->modelTestable(SecondModel::class)
             ->assertHasColumns($column)
-            ->assertCanFillables($column)
+            ->assertHasColumnsInFillable($column)
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model')
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model', 'first_model_id')
             ->assertHasManyToManyRelation(ThirdModel::class, 'third_models')
@@ -70,8 +75,174 @@ class EloquentModelTest extends TestCase
     {
         $this->modelTestable(ThirdModel::class)
             ->assertHasColumns(['id', 'name'])
-            ->assertCanFillables(['name'])
+            ->assertHasColumnsInFillable(['name'])
             ->assertHasManyToManyRelation(SecondModel::class, 'second_models');
+    }
+
+    /**
+     * @test
+     */
+    public function it_have_fifth_model_model()
+    {
+        $this->modelTestable(FifthModel::class)
+            ->assertHasColumns(['id', 'name'])
+            ->assertHasColumnsInFillable(['name'])
+            ->assertCanOnlyFill('name', 'id', 'second_model_id')
+            ->assertHasColumnsInGuarded('is_admin')
+            ->assertHasOnlyColumnsInGuarded('is_admin');
+    }
+
+    /**
+     * @test
+     */
+    public function it_tests_for_the_timestamps()
+    {
+        $this->modelTestable(SixthModel::class)
+            ->assertHasColumns(['id', 'name'])
+            ->assertHasTimestampsColumns()
+            ->assertHasSoftDeleteTimestampColumns();
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_fillable_field_is_not_exactly_as_expected()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertCanOnlyFill(['id', 'name', 'second_model_id', 'is_admin']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_table_columns_is_not_exactly_as_expected()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasOnlyColumns(['id', 'name', 'second_model_id', 'is_admin', 'missing']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_field_is_not_exactly_as_expected()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasOnlyColumnsInGuarded(['id', 'is_admin']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_field_does_not_include_the_expected_value()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasColumnsInGuarded(['id']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_fillable_field_does_not_include_the_expected_value()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(FifthModel::class)
+            ->assertHasColumnsInFillable(['is_admin']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_and_fillable_arrays_contain_the_same_value()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasNoGuardedAndFillableFields();
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_guarded_and_fillable_arrays_contain_the_same_value_when_asserting_only_fillable()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertCanOnlyFill('id', 'name', 'is_admin');
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_model_does_not_have_the_has_one_relation()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasHasOneRelation(FifthModel::class);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_model_does_not_have_the_has_morph_one_relation()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasMorphOneRelation(FirstModel::class, 'morph_models');
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_model_does_not_have_the_has_many_relation()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasHasManyRelation(FirstModel::class);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_model_does_not_have_the_has_many_through_relation()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasHasManyThroughRelation(FirstModel::class, SecondModel::class);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_model_does_not_have_the_belongs_to_relation()
+    {
+        FirstModel::factory()->create();
+
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasBelongsToRelation(FifthModel::class, null, 'first_model_id');
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_model_does_not_have_the_has_many_to_many_relation()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasManyToManyRelation(FirstModel::class);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_the_model_does_not_have_the_has_many_morph_relation()
+    {
+        $this->expectException(ExpectationFailedException::class);
+        $this->modelTestable(SixthModel::class)
+            ->assertHasHasManyMorphRelation(FirstModel::class, 'morph_models');
     }
 
     /**
@@ -81,7 +252,7 @@ class EloquentModelTest extends TestCase
     {
         $this->modelTestable(MorphModel::class)
             ->assertHasColumns(['id', 'name', 'morph_modelable_type', 'morph_modelable_id'])
-            ->assertCanFillables(['name', 'morph_modelable_type', 'morph_modelable_id'])
+            ->assertHasColumnsInFillable(['name', 'morph_modelable_type', 'morph_modelable_id'])
             ->assertHasBelongsToMorphRelation(SecondModel::class, 'morph_modelable')
             ->assertHasBelongsToMorphRelation(SixthModel::class, 'morph_modelable');
     }
@@ -94,7 +265,7 @@ class EloquentModelTest extends TestCase
         $column = ['id', 'name', 'first_model_id'];
         $this->modelTestable(SixthModel::class)
             ->assertHasColumns($column)
-            ->assertCanFillables($column)
+            ->assertHasColumnsInFillable($column)
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model')
             ->assertHasBelongsToRelation(FirstModel::class, 'first_model', 'first_model_id')
             ->assertHasMorphOneRelation(MorphModel::class, 'morphed');

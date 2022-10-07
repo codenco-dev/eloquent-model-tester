@@ -42,14 +42,18 @@ abstract class TestCase extends Orchestra
             $table->increments('id');
             $table->string('name');
             $table->integer('second_model_id')->nullable();
+            $table->boolean('is_admin')->default(false);
             $table->foreign('second_model_id')->references('id')->on('second_models');
         });
 
         $this->app['db']->connection()->getSchemaBuilder()->create('sixth_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->boolean('is_admin')->default(false);
             $table->integer('first_model_id')->nullable();
             $table->foreign('first_model_id')->references('id')->on('first_models');
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         $this->app['db']->connection()->getSchemaBuilder()->create('second_model_third_model', function (Blueprint $table) {

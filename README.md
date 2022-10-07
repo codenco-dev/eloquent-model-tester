@@ -18,7 +18,8 @@ composer require codenco-dev/eloquent-model-tester --dev
 
 ## Usage
 
-To use this package, you have to generate factories for your models. (See [Factories Documentation](https://laravel.com/docs/6.x/database-testing#writing-factories))
+To use this package, you have to generate factories for your models. (
+See [Factories Documentation](https://laravel.com/docs/6.x/database-testing#writing-factories))
 You can generate one test file by model or for several. For your model `MyModel` you can use this command for example:
 
 ```bash
@@ -50,16 +51,21 @@ class MyModelTest extends TestCase
 
 For more simplicity, you can put the `RefreshDatabase` use statement in `tests/TestCase.php` file
 
-### Test of structure and of fillable
+### Test of structure and of fillable / guarded
 
 With this structure
 
     users
         id - integer
         name - string
+        email - string
+        password - string
+        remeber_token - string
         other_field - string
+        created_at - timestamp
+        updated_at - timestamp
 
-you can test if you have all the fields you need and if they are fillable.
+you can test if you have all the fields you need and if they are fillable or guarded.
 
 ```php
 class UserTest extends TestCase
@@ -70,7 +76,152 @@ class UserTest extends TestCase
     {
         $this->modelTestable(User::class)
             ->assertHasColumns(['id','name','email','password','remember_token'])
-            ->assertCanFillables(['name','password']);
+            ->assertHasColumnsInFillable(['name','password'])
+            ->assertHasColumnsInGuarded(['remember_token'])
+            ->assertHasTimestampsColumns();
+    }
+}
+```
+
+The function `assertHasColumns()` only checks if the values provided are in the schema of the table. If you want to
+ensure that no other columns are present, you can use the stricter `assertHasOnlyColumns()` assertion to check that *
+only* the column names provided are present in the table.
+
+***N.B. When using this you will need to provide the `created_at` and `updated_at` fields if they are present in the
+database table.***
+
+The functions `assertHasColumnsInFillable()` and `assertHasColumnsInGuarded()` only check if the `$fillable`
+and `$guarded` arrays contain the values passed. If you want to ensure that no other entries are in the `$fillable`
+and `$guarded` arrays, then you can use the stricter `assertHasOnlyColumnsInFillable()`
+and `assetHasOnlyColumnsInGuarded()` functions as follows:
+
+```php
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasOnlyColumns(['id','name','email','password','remember_token', 'created_at', 'updated_at']) // Will fail as missing 'other_field'.
+            ->assertHasOnlyColumnsInFillable(['name','password'])
+            ->assertHasOnlyColumnsInGuarded(['remember_token']);
+    }
+}
+```
+
+To further confirm that only a set of columns can be filled, you can use the `assertCanOnlyFill()` assertion to confirm
+this. This assertion confirms that the fields provided are the only columns that can be filled, by confirming that these
+are the only values in the `$fillable` array and they don't appear in the `$guarded` array.
+
+```php
+class User extends Model
+{
+    $fillable = ['name', 'password', 'email'];
+    
+    $guarded = ['remember_token'];
+}
+
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasColumns(['id','name','email','password','remember_token'])
+            ->assertCanOnlyFill(['name','password']); // Will fail as 'email' is in the fillable array.
+    }
+}
+```
+
+To confirm that a field does not appear in both the `$fillable` and `$guarded` arrays by mistake there is
+the `assertNoGuardedAndFillableFields()` assertion that checks that no entry appears in both:
+
+```php
+class User extends Model
+{
+    $fillable = ['name', 'password', 'email'];
+    
+    $guarded = ['email'];
+}
+
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertNoGuardedAndFillableFields(); // Will fail as 'email' is in both the fillable & guarded arrays.
+    }
+}
+```
+
+To check for soft delete `deleted_at` column on your model, you can use the `assertHasSoftDeleteTimestampColumns()`
+assertion:
+
+    user:
+        id - integer
+        name - string
+        deleted_at - timestamp
+
+```php
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class User extends Model
+{
+    use SoftDeletes;
+}
+
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasSoftDeleteTimestampColumns();
+    }
+}
+```
+
+### HasOne et BelongsTo
+
+You can test relations of your models. For example, with this structure
+
+    user
+        id - integer
+        name - string
+
+    phones
+        id - integer
+        number - string
+        user_id - integer
+
+you can use `assertHasOneRelation()` and `assertHasBelongsToRelations` methods like this:
+
+```php
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_category_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasOneRelation(Phone::class);
+    }
+
+}
+
+class PhoneTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_customer_model()
+    {
+        $this->modelTestable(Phone::class)
+            ->assertHasBelongsToRelation(User::class);
     }
 }
 ```
@@ -116,7 +267,8 @@ class CustomerTest extends TestCase
 }
 ```
 
-If you don't use Laravel naming convention, you may also override the relation and local keys (for belongsTo relation) by passing
+If you don't use Laravel naming convention, you may also override the relation and local keys (for belongsTo relation)
+by passing
 additional arguments to the `assertHasHasManyRelations` and `assertHasBelongsToRelations` methods
 
 ```php
@@ -170,7 +322,8 @@ class CustomersTest extends TestCase
 }
 ```
 
-If you don't use Laravel naming convention, you may also override the relation and foreign keys by passing additional arguments to the `assertHasHasManyThroughRelations` method
+If you don't use Laravel naming convention, you may also override the relation and foreign keys by passing additional
+arguments to the `assertHasHasManyThroughRelations` method
 
 ```php
     $this->modelTestable(Customer::class)
@@ -178,7 +331,8 @@ If you don't use Laravel naming convention, you may also override the relation a
 
 ```
 
-_Attention_: as there is no **official** inverse of this relationship, it is not possible to use this assertion in the reverse, i.e., in the `orders` model checking for a `customers` relationship.
+_Attention_: as there is no **official** inverse of this relationship, it is not possible to use this assertion in the
+reverse, i.e., in the `orders` model checking for a `customers` relationship.
 
 ### Many to Many relations
 
@@ -291,6 +445,7 @@ class CommentTest extends TestCase
 ```
 
 #### MorphOne Relations
+
 If you have a Morph One Relation,
 
     posts
@@ -362,6 +517,94 @@ class MyPivotTest extends TestCase
     }
 }
 ```
+
+### Model Scopes
+
+You can test if a model has a query scope defined using the `assertHasScope()` assertion:
+
+```php
+class User extends Model
+{
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePopular($query)
+    {
+        return $query->where('votes', '>', 100);
+    }
+}
+
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasScope('popular');
+    }
+}
+
+```
+
+Of course if you're using Dynamic Scopes then `assertHasScope()` takes the arguments to pass to the query scope:
+
+```php
+class User extends Model
+{
+    /**
+    * Scope a query to only include users of a given type.
+    *
+    * @param  \Illuminate\Database\Eloquent\Builder  $query
+    * @param  mixed  $type
+    * @return \Illuminate\Database\Eloquent\Builder
+    */
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+}
+
+class UserTest extends TestCase
+{
+    use HasModelTestor;
+
+    public function test_have_user_model()
+    {
+        $this->modelTestable(User::class)
+            ->assertHasScope('ofType', 'admin');
+    }
+}
+```
+
+### Available Assertions
+
+| Assertion                               | Description                                                                         | Notes                                                  |
+|-----------------------------------------|-------------------------------------------------------------------------------------|--------------------------------------------------------|
+| `assertHasTimestampsColumns()`          | checks if the `created_at` and `updated_at` columns are present in the table.       ||
+| `assertHasSoftDeleteTimestampColumns()` | checks if the `deleted_at` column is present in the table.                          ||
+| `assertHasColumns()`                    | checks for the presence of the provided column names appear in the table.           ||
+| `assertHasOnlyColumns()`                | checks that only the column names provided are the only columns of the table.       |
+| `assertCanOnlyFill()`                   | checks that only the fields provided can be filled and no others.                   |
+| `assertCanFillables()`                  | checks if the fields provided can be filled.                                        | *
+Deprecated* - Alias of `assertHasColumnsInFillable()` |
+| `assertHasColumnsInFillable()`          | checks if the fields provided can be filled.                                        ||
+| `assertHasOnlyColumnsInFillable()`      | checks if only the fields provided are those that appear in the $fillable array.    ||
+| `assertHasColumnsInGuarded()`           | checks if the fields provide are guarded.                                           ||
+| `assertHasOnlyColumnsInGuarded()`       | checks if the only the fields provided are those that appear in the $guarded array. ||
+| `assertHasNoGuardedAndFillableFields()` | checks that a column does not appear in both the $fillable and $guarded arrays.     ||
+| `assertHasHasOneRelation()`             | checks that the model has the `HasOne` relation.                                    ||
+| `assertHasMorphOneRelation()`           | checks that the model has the `MorphOne` relation.                                  ||
+| `assertHasHasManyRelation()`            | checks that the model hsa the `HasMany` relation.                                   ||
+| `assertHasHasManyThroughRelation()`     | checks that the model has the `HasManyThrough` relation.                            ||
+| `assertHasBelongsToRelation()`          | checks that the model has the `BelongsTo` relation.                                 ||
+| `assertHasManyToManyRelation()`         | checks that the model has the `ManyToMany` relation.                                ||
+| `assertHasHasManyMorphRelation()`       | checks that the model has the `HasManyMorph` relation.                              ||
+| `assertHasBelongsToMorphRelation()`     | checks that the model has the `BelongsToMorph` relation.                            ||
+| `assertHasScope()`                      | checks that the model has the scope.                                                ||
 
 ### Testing
 

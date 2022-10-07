@@ -101,7 +101,41 @@ class ModelTester extends TestCase
         return $this;
     }
 
+    public function assertHasOnlyColumns(array|string ...$columns): self
+    {
+        $columns = $this->getArrayParameters(...$columns);
+        $this->assertEqualsCanonicalizing($columns, Schema::getColumnListing($this->getTable()), 'The columns of the database table do not match the expected values.');
+
+        return $this;
+    }
+
+    public function assertCanOnlyFill(array|string ...$columns): self
+    {
+        $columns = $this->getArrayParameters(...$columns);
+        $modelClass = $this->getModel();
+        $modelObject = new $modelClass;
+
+        $fillable = $modelObject->getFillable();
+        $guarded = $modelObject->getGuarded();
+
+        $diff = array_diff($fillable, $guarded);
+
+        $this->assertHasNoGuardedAndFillableFields();
+        $this->assertEqualsCanonicalizing($columns, $diff, 'The expected fillable fields differ from those defined in $fillable and $guarded.');
+        $this->assertCanFillables($diff);
+
+        return $this;
+    }
+
+    /**
+     * @deprecated
+     */
     public function assertCanFillables(array|string ...$columns): self
+    {
+        return $this->assertHasColumnsInFillable(...$columns);
+    }
+
+    public function assertHasColumnsInFillable(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
         $modelClass = $this->getModel();
@@ -118,6 +152,73 @@ class ModelTester extends TestCase
             sprintf(
                 'Column %s isn\'t mass fillable.',
                 $notFillable->implode(', ')
+            )
+        );
+
+        return $this;
+    }
+
+    public function assertHasOnlyColumnsInFillable(array|string ...$columns): self
+    {
+        $columns = $this->getArrayParameters(...$columns);
+        $modelClass = $this->getModel();
+        $modelObject = new $modelClass;
+
+        $this->assertEqualsCanonicalizing($columns, $modelObject->getFillable(), 'Model $fillable array does not match expected.');
+
+        return $this;
+    }
+
+    public function assertHasColumnsInGuarded(array|string ...$columns): self
+    {
+        $columns = $this->getArrayParameters(...$columns);
+        $modelClass = $this->getModel();
+        $modelObject = new $modelClass;
+        $notGuarded = collect([]);
+        foreach ($columns as $column) {
+            if (! $modelObject->isGuarded($column)) {
+                $notGuarded->push($column);
+            }
+        }
+        $this->assertEquals(
+            [],
+            $notGuarded->toArray(),
+            sprintf(
+                'Column %s isn\'t guarded.',
+                $notGuarded->implode(', ')
+            )
+        );
+
+        return $this;
+    }
+
+    public function assertHasOnlyColumnsInGuarded(array|string ...$columns): self
+    {
+        $columns = $this->getArrayParameters(...$columns);
+        $modelClass = $this->getModel();
+        $modelObject = new $modelClass;
+
+        $this->assertEqualsCanonicalizing($columns, $modelObject->getGuarded());
+
+        return $this;
+    }
+
+    public function assertHasNoGuardedAndFillableFields(): self
+    {
+        $modelClass = $this->getModel();
+        $modelObject = new $modelClass;
+
+        $fillable = $modelObject->getFillable();
+        $guarded = $modelObject->getGuarded();
+
+        $intersect = collect(array_intersect($fillable, $guarded));
+
+        $this->assertEquals(
+            [],
+            $intersect->toArray(),
+            sprintf(
+                'Column %s appear in guarded and fillable.',
+                $intersect->implode(', ')
             )
         );
 
