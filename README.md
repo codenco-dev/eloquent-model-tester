@@ -587,10 +587,9 @@ class UserTest extends TestCase
 | `assertHasTimestampsColumns()`          | checks if the `created_at` and `updated_at` columns are present in the table.       ||
 | `assertHasSoftDeleteTimestampColumns()` | checks if the `deleted_at` column is present in the table.                          ||
 | `assertHasColumns()`                    | checks for the presence of the provided column names appear in the table.           ||
-| `assertHasOnlyColumns()`                | checks that only the column names provided are the only columns of the table.       |
-| `assertCanOnlyFill()`                   | checks that only the fields provided can be filled and no others.                   |
-| `assertCanFillables()`                  | checks if the fields provided can be filled.                                        | *
-Deprecated* - Alias of `assertHasColumnsInFillable()` |
+| `assertHasOnlyColumns()`                | checks that only the column names provided are the only columns of the table.       ||
+| `assertCanOnlyFill()`                   | checks that only the fields provided can be filled and no others.                   ||
+| `assertCanFillables()`                  | checks if the fields provided can be filled.                                        | *Deprecated* - Alias of `assertHasColumnsInFillable()` |
 | `assertHasColumnsInFillable()`          | checks if the fields provided can be filled.                                        ||
 | `assertHasOnlyColumnsInFillable()`      | checks if only the fields provided are those that appear in the $fillable array.    ||
 | `assertHasColumnsInGuarded()`           | checks if the fields provide are guarded.                                           ||
