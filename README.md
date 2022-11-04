@@ -199,7 +199,7 @@ You can test relations of your models. For example, with this structure
         number - string
         user_id - integer
 
-you can use `assertHasOneRelation()` and `assertHasBelongsToRelations` methods like this:
+you can use `assertHasHasOneRelation()` and `assertHasBelongsToRelations` methods like this:
 
 ```php
 class UserTest extends TestCase
@@ -209,7 +209,7 @@ class UserTest extends TestCase
     public function test_have_category_model()
     {
         $this->modelTestable(User::class)
-            ->assertHasOneRelation(Phone::class);
+            ->assertHasHasOneRelation(Phone::class);
     }
 
 }
