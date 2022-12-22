@@ -17,10 +17,18 @@ class ModelTester extends TestCase
 
     private ?string $table;
 
+    private Schema $schema;
+
     public function create(?string $tested, ?string $table = null): self
     {
         $this->tested = $tested;
         $this->table = $table;
+
+        $this->schema = new Schema();
+
+        if ($this->tested && $this->isModelClass()) {
+            $this->schema::setConnection($this->getModelConnection());
+        }
 
         return $this;
     }
@@ -56,6 +64,13 @@ class ModelTester extends TestCase
         return (new $modelClass)->getTable();
     }
 
+    public function getModelConnection(): \Illuminate\Database\Connection
+    {
+        $modelClass = $this->getModel();
+
+        return (new $modelClass)->getConnection();
+    }
+
     public function isModelClass(?string $modelClass = null): bool
     {
         if (! is_null($modelClass)) {
@@ -68,9 +83,9 @@ class ModelTester extends TestCase
     public function isExistingTable(?string $tableName = null): bool
     {
         if (! is_null($tableName)) {
-            return Schema::hasTable($tableName);
+            return $this->schema::hasTable($tableName);
         } else {
-            return Schema::hasTable($this->getModelTable());
+            return $this->schema::hasTable($this->getModelTable());
         }
     }
 
@@ -89,7 +104,7 @@ class ModelTester extends TestCase
         $columns = $this->getArrayParameters(...$columns);
         collect($columns)->each(function ($column) {
             $this->assertTrue(
-                in_array($column, Schema::getColumnListing($this->getTable())),
+                in_array($column, $this->schema::getColumnListing($this->getTable())),
                 sprintf(
                     'Column %s isn\'t a column of table %s.',
                     $column,
@@ -104,7 +119,7 @@ class ModelTester extends TestCase
     public function assertHasOnlyColumns(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
-        $this->assertEqualsCanonicalizing($columns, Schema::getColumnListing($this->getTable()), 'The columns of the database table do not match the expected values.');
+        $this->assertEqualsCanonicalizing($columns, $this->schema::getColumnListing($this->getTable()), 'The columns of the database table do not match the expected values.');
 
         return $this;
     }
