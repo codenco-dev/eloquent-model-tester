@@ -58,7 +58,7 @@ class ModelTester extends TestCase
 
     public function getModelConnection(): \Illuminate\Database\Connection
     {
-        if($this->tested && $this->isModelClass()) {
+        if ($this->tested && $this->isModelClass()) {
             $modelClass = $this->getModel();
             return (new $modelClass)->getConnection();
         }
