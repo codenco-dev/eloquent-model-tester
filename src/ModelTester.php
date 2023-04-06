@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Assert;
 
-class ModelTester extends TestCase
+class ModelTester extends Assert
 {
     private ?string $tested;
 
