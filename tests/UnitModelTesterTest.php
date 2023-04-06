@@ -14,8 +14,8 @@ class UnitModelTesterTest extends TestCase
      */
     public function it_doesnt_run_without_model_class()
     {
-        $this->assertFalse((ModelTester::create(NotAModel::class))->isModelClass());
-        $this->assertTrue((ModelTester::create(FirstModel::class))->isModelClass());
+        $this->assertFalse(ModelTester::create(NotAModel::class)->isModelClass());
+        $this->assertTrue(ModelTester::create(FirstModel::class)->isModelClass());
     }
 
     /**
@@ -23,10 +23,10 @@ class UnitModelTesterTest extends TestCase
      */
     public function it_doesnt_run_without_existing_table_name()
     {
-        $this->assertFalse((ModelTester::create(null, 'not_exists'))->isExistingTable());
-        $this->assertTrue((ModelTester::create(null, 'first_models'))->isExistingTable());
+        $this->assertFalse(ModelTester::create(null, 'not_exists')->isExistingTable());
+        $this->assertTrue(ModelTester::create(null, 'first_models')->isExistingTable());
 
-        $this->assertTrue((ModelTester::create(FirstModel::class))->isExistingTable());
+        $this->assertTrue(ModelTester::create(FirstModel::class)->isExistingTable());
     }
 
     /**

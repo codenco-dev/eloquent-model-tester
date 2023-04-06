@@ -18,7 +18,6 @@ class ModelTesterServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         // Register the main class to use with the facade
         $this->app->bind('model-tester', function () {
             return new ModelTester;
