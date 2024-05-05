@@ -9,14 +9,12 @@ use CodencoDev\EloquentModelTester\Tests\TestModels\SecondModel;
 
 class UnitModelTesterTest extends TestCase
 {
-    
     public function test_it_doesnt_run_without_model_class()
     {
         $this->assertFalse(ModelTester::create(NotAModel::class)->isModelClass());
         $this->assertTrue(ModelTester::create(FirstModel::class)->isModelClass());
     }
 
-    
     public function test_it_doesnt_run_without_existing_table_name()
     {
         $this->assertFalse(ModelTester::create(null, 'not_exists')->isExistingTable());
@@ -25,7 +23,6 @@ class UnitModelTesterTest extends TestCase
         $this->assertTrue(ModelTester::create(FirstModel::class)->isExistingTable());
     }
 
-    
     public function test_it_should_have_belongs_to_relations_name()
     {
         $instance = ModelTester::create(FirstModel::class);
@@ -33,7 +30,6 @@ class UnitModelTesterTest extends TestCase
         $this->assertEquals('second_model', $relation);
     }
 
-    
     public function test_it_should_have_has_many_relations_name()
     {
         $instance = ModelTester::create(FirstModel::class);
@@ -41,7 +37,6 @@ class UnitModelTesterTest extends TestCase
         $this->assertEquals('second_models', $relation);
     }
 
-    
     public function test_it_should_have_many_to_many_relations_name()
     {
         $instance = ModelTester::create(FirstModel::class);

@@ -480,7 +480,7 @@ class ModelTester extends Assert
     }
 
     /**
-     * @param $groups
+     * @param  $groups
      * @param  mixed  $columns
      * @return array
      */
