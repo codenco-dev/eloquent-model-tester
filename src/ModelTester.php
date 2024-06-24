@@ -56,6 +56,16 @@ class ModelTester extends Assert
         return (new $modelClass)->getTable();
     }
 
+    public function getModelConnection(): \Illuminate\Database\Connection
+    {
+        if ($this->tested && $this->isModelClass()) {
+            $modelClass = $this->getModel();
+            return (new $modelClass)->getConnection();
+        }
+
+        return Schema::getConnection();
+    }
+
     public function isModelClass(?string $modelClass = null): bool
     {
         if (! is_null($modelClass)) {
@@ -68,9 +78,9 @@ class ModelTester extends Assert
     public function isExistingTable(?string $tableName = null): bool
     {
         if (! is_null($tableName)) {
-            return Schema::hasTable($tableName);
+            return Schema::setConnection($this->getModelConnection())->hasTable($tableName);
         } else {
-            return Schema::hasTable($this->getModelTable());
+            return Schema::setConnection($this->getModelConnection())->hasTable($this->getModelTable());
         }
     }
 
@@ -89,7 +99,7 @@ class ModelTester extends Assert
         $columns = $this->getArrayParameters(...$columns);
         collect($columns)->each(function ($column) {
             $this->assertTrue(
-                in_array($column, Schema::getColumnListing($this->getTable())),
+                in_array($column, Schema::setConnection($this->getModelConnection())->getColumnListing($this->getTable())),
                 sprintf(
                     'Column %s isn\'t a column of table %s.',
                     $column,
@@ -104,7 +114,7 @@ class ModelTester extends Assert
     public function assertHasOnlyColumns(array|string ...$columns): self
     {
         $columns = $this->getArrayParameters(...$columns);
-        $this->assertEqualsCanonicalizing($columns, Schema::getColumnListing($this->getTable()), 'The columns of the database table do not match the expected values.');
+        $this->assertEqualsCanonicalizing($columns, Schema::setConnection($this->getModelConnection())->getColumnListing($this->getTable()), 'The columns of the database table do not match the expected values.');
 
         return $this;
     }
