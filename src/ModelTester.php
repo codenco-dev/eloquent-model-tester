@@ -60,6 +60,7 @@ class ModelTester extends Assert
     {
         if ($this->tested && $this->isModelClass()) {
             $modelClass = $this->getModel();
+
             return (new $modelClass)->getConnection();
         }
 
