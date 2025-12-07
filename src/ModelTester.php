@@ -451,7 +451,7 @@ class ModelTester extends Assert
         $instance = $related::factory()->create();
         $morph = $this->getModel()::factory()->create([
             $id => $instance->id,
-            $type => $related,
+            $type => $instance->getMorphClass(),
         ]);
         $morph->refresh();
 
