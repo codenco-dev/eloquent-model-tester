@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer show *)",
+      "Bash(curl -s \"https://packagist.org/packages/orchestra/testbench.json\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); versions=list\\(data['package']['versions'].keys\\(\\)\\); print\\('\\\\n'.join\\(v for v in versions if not 'dev' in v and not 'alpha' in v and not 'beta' in v and not 'RC' in v\\)[:20]\\)\")",
+      "Bash(python3 -c ' *)",
+      "Bash(composer validate *)",
+      "Bash(composer update *)",
+      "Bash(composer test *)",
+      "Bash(vendor/bin/phpunit --list-tests)",
+      "Bash(vendor/bin/phpunit *)"
+    ]
+  }
+}
